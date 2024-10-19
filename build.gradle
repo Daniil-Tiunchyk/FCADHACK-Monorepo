@@ -8,7 +8,7 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = '21'
 }
 
 repositories {
@@ -21,14 +21,8 @@ ext {
 
 dependencies {
 
-    //Swagger
-    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.2.0'
-
     //Cache
     implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
-
-
-
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'

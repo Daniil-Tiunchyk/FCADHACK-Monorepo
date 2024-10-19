@@ -1,7 +1,6 @@
 package com.example.apigateway.filter;
 
 
-
 import com.example.apigateway.exceptions.LocalException;
 import com.example.apigateway.utils.JWTUtil;
 import lombok.Data;
@@ -19,8 +18,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     private static final String DEFAULT_REQUIRED_ROLE = "ROLE_USER";
 
     private final JWTUtil jwtUtil;
-
-
 
 
     public AuthenticationFilter(JWTUtil jwtUtil) {
@@ -48,20 +45,20 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 jwtUtil.validateToken(authHeader);
                 System.out.println(4);
                 String requiredRole = config.requiredRole;
-                System.out.println("ROle: "+requiredRole);
-                if(requiredRole!=null){
+                System.out.println("ROle: " + requiredRole);
+                if (requiredRole != null) {
                     List<String> roles = jwtUtil.getRoles(authHeader);
 
-                    System.out.println("roles: "+roles);
-                    if (!isValidRole(roles,requiredRole)) {
+                    System.out.println("roles: " + roles);
+                    if (!isValidRole(roles, requiredRole)) {
 
                         throw new LocalException(HttpStatus.FORBIDDEN, "User does not have the required role");
                     }
                 }
-                    request=exchange.getRequest()
-                            .mutate()
-                            .header("loadedUsername",jwtUtil.getUsername(authHeader))
-                            .build();
+                request = exchange.getRequest()
+                        .mutate()
+                        .header("loadedUsername", jwtUtil.getUsername(authHeader))
+                        .build();
 
             } catch (Exception e) {
                 throw new LocalException(HttpStatus.UNAUTHORIZED, "Un authorized access to application");
@@ -71,7 +68,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         });
     }
 
-    private boolean isValidRole(List<String> roles,String requiredRole) {
+    private boolean isValidRole(List<String> roles, String requiredRole) {
         return roles.contains(requiredRole);
     }
 

@@ -1,7 +1,6 @@
 package com.example.apigateway.utils;
 
 
-
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+
 import java.security.Key;
 import java.util.List;
 
@@ -37,16 +37,19 @@ public class JWTUtil {
             System.out.println("invalid token" + e);
         }
     }
-    public List<String> getRoles(String token){
-        return getAllClaimsFromToken(token).get("roles",List.class);
+
+    public List<String> getRoles(String token) {
+        return getAllClaimsFromToken(token).get("roles", List.class);
     }
-    private Claims getAllClaimsFromToken(String token){
+
+    private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
     }
-    public String getUsername(String token){
+
+    public String getUsername(String token) {
         return getAllClaimsFromToken(token).getSubject();
     }
-    }
+}
