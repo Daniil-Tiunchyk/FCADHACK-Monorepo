@@ -24,7 +24,11 @@
 }
 
 .tableRowItems {
-    cursor: auto;
+    cursor: pointer;
+    
+}
+.tableRowItems:hover {
+    background: var(--table);
 }
 
 .tableCell {

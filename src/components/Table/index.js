@@ -3,9 +3,23 @@ import React, { useEffect, useState } from "react";
 import styles from "./Table.module.css";
 
 import TableFooter from "./TableFooter";
+import TableItemModal from "./TableItemModal/TableItemModal";
 
 
 const Table = ({ data }) => {
+  const [isOpenModal, setIsOpenModal] = useState(false)
+  const [selectedItem, setSelectedItem] = useState({
+    email:"",
+    endpoint:"",
+    login:"",
+    name: "",
+    supportLevel:"",
+    timestamp: null,
+    userID: null,
+    gender:"",
+    age: null,
+  })
+
   const [currentItems, setCurrentItems] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
@@ -29,6 +43,11 @@ const formatDate = (timestamp) => {
   return new Intl.DateTimeFormat('ru', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp)
 }
 
+  const onClickTableElem = (el) => {
+    document.body.style.overflow = 'hidden';
+    setSelectedItem(el)
+    setIsOpenModal(true)
+  }
 
     return (
         <>
@@ -49,22 +68,22 @@ const formatDate = (timestamp) => {
         </thead>
         <tbody>
           {currentItems.map((el, i) => (
-            <tr className={styles.tableRowItems} key={el.i}> {/* ПОМЕНЯТЬ НА user_id */}
-              <td className={styles.tableCell}>{el?.email}</td>
-              <td className={styles.tableCell}>{el?.name}</td>
-              <td className={styles.tableCell}>{el?.endpoint}</td>
-              <td className={styles.tableCell}>{el?.login}</td>
-              <td className={styles.tableCell}>{el?.supportLevel}</td>
-              <td className={styles.tableCell}>{el?.timestamp && formatDate(el?.timestamp)}</td>
-              <td className={styles.tableCell}>{el?.gender}</td>
-              <td className={styles.tableCell}>{el?.age}</td>
-              <td className={styles.tableCell}>{el?.userID}</td>
+            <tr onClick={() => onClickTableElem(el)} className={styles.tableRowItems} key={el.i}> {/* ПОМЕНЯТЬ НА userID */}
+              <td className={styles.tableCell}>{el?.email || '-'}</td>
+              <td className={styles.tableCell}>{el?.name || '-'}</td>
+              <td className={styles.tableCell}>{el?.endpoint || '-'}</td>
+              <td className={styles.tableCell}>{el?.login || '-'}</td>
+              <td className={styles.tableCell}>{el?.supportLevel || '-'}</td>
+              <td className={styles.tableCell}>{((el?.timestamp && formatDate(el?.timestamp)) || '-')}</td>
+              <td className={styles.tableCell}>{el?.gender || '-'}</td>
+              <td className={styles.tableCell}>{el?.age || '-'}</td>
+              <td className={styles.tableCell}>{el?.userID || '-'}</td>
             </tr>
           ))}
         </tbody>
       </table>
       </div>
-      
+      {isOpenModal && <TableItemModal closeModal={setIsOpenModal} selectedItem={selectedItem} />}
       <TableFooter pageCount={pageCount} handlePageClick={handlePageClick} />
     </>
     )
