@@ -53,12 +53,6 @@ public class SupportRequestFilterJob {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        // Извлекаем нужные параметры из appConfig
-       // boolean regexEnabled = appConfig.getRegex().isEnabled();
-        String regexPattern = appConfig.getRegex().getPattern();
-        boolean excludeModeEnabled = Boolean.parseBoolean(ConfigUtil.getProperty("mode.exclude.enabled", "false"));
-        boolean replaceModeEnabled = Boolean.parseBoolean(ConfigUtil.getProperty("mode.replace.enabled", "false"));
-        boolean removeModeEnabled = Boolean.parseBoolean(ConfigUtil.getProperty("mode.remove.enabled", "false"));
 //        List<String> disabledEndpoints = appConfig.getEndpoint().getDisabledEndpoints();
         List<String> disabledEndpoints = Arrays.asList(
                 "https://example.com/api/endpoint1",
