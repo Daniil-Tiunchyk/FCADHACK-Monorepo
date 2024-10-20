@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "sensitive_data")
@@ -18,8 +19,11 @@ public class SensitiveData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String originalData;
-    private String field;
-    private String regex;
+
+    @ElementCollection
+    @CollectionTable(name = "detected_fields", joinColumns = @JoinColumn(name = "sensitive_data_id"))
+    private List<DetectedField> detectedFields;
+
     private LocalDateTime detectedAt;
 
 }
