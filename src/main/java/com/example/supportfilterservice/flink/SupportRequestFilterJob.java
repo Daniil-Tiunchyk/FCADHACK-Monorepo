@@ -3,22 +3,30 @@ package com.example.supportfilterservice.flink;
 import com.example.supportfilterservice.config.AppConfig;
 import com.example.supportfilterservice.domain.repository.SensitiveDataRepository;
 import com.example.supportfilterservice.flink.function.CustomFilterFunction;
+import com.example.supportfilterservice.flink.function.RequestProcessor;
 import com.example.supportfilterservice.model.SupportRequest;
 import com.example.supportfilterservice.util.ConfigUtil;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.apache.flink.api.common.functions.MapFunction;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.*;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Component
 public class SupportRequestFilterJob {
 
     private final StreamExecutionEnvironment env;
+
     private final AppConfig appConfig;
     private final SensitiveDataRepository sensitiveDataRepository;
 
@@ -46,7 +54,7 @@ public class SupportRequestFilterJob {
         ObjectMapper objectMapper = new ObjectMapper();
 
         // Извлекаем нужные параметры из appConfig
-        boolean regexEnabled = appConfig.getRegex().isEnabled();
+       // boolean regexEnabled = appConfig.getRegex().isEnabled();
         String regexPattern = appConfig.getRegex().getPattern();
         boolean excludeModeEnabled = Boolean.parseBoolean(ConfigUtil.getProperty("mode.exclude.enabled", "false"));
         boolean replaceModeEnabled = Boolean.parseBoolean(ConfigUtil.getProperty("mode.replace.enabled", "false"));
@@ -60,20 +68,15 @@ public class SupportRequestFilterJob {
                 "https://example.com/api/endpoint5"
         );
 
-        // Передаем только примитивные данные в CustomFilterFunction
-        env
-                .addSource(consumer)
-                .map(value -> objectMapper.readValue(value, SupportRequest.class))
-                .filter(new CustomFilterFunction(
-                        regexEnabled,
-                        regexPattern,
-                        excludeModeEnabled,
-                        replaceModeEnabled,
-                        removeModeEnabled,
-                        disabledEndpoints))
+
+
+        List<AppConfig.RegexConfig> regexConfigs = new ArrayList<>();
+
+        env.addSource(consumer)
+                .map(new RequestProcessor(disabledEndpoints, regexConfigs, sensitiveDataRepository, objectMapper))
+                .filter(request -> request != null)
                 .map(objectMapper::writeValueAsString)
                 .addSink(producer);
-
         // TODO Сохранять отфильтрованное в БД
         env.execute("Support Request Filter Job");
     }
