@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css"
 import Button from "./components/Button/Button";
 import CalendarDropdown from "./components/CalendarDropdown/CalendarDropdown";
@@ -9,8 +9,13 @@ import data from "./elements.json"
 
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true)
   const [isOpenfilters, setOpenFilters] = useState(false)
   const [isOpenBurger, setIsOpenBurger] = useState(false);
+
+  useEffect(() => {
+    return () => setIsLoading(false)
+  }, [])
 
   return (
     <div className={"App"}>
@@ -65,7 +70,7 @@ function App() {
               <Button className="apply-button apply-button-filters">Применить</Button>
               </div>
               ) }
-              <Table data={data}/>
+              {isLoading || <Table data={data}/>}
             </main>
           <footer>
             <p className="ExplainingText">Выберите нужный лог и просмотрите подробную информацию о нем</p>

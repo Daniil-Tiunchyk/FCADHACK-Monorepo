@@ -44,13 +44,13 @@ const Table = ({ data }) => {
         <tbody>
           {currentItems.map((el, i) => (
             <tr className={styles.tableRowItems} key={el.i}> {/* ПОМЕНЯТЬ НА user_id */}
-              <td className={styles.tableCell}>{el.email}</td>
-              <td className={styles.tableCell}>{el.AcPoint}</td>
-              <td className={styles.tableCell}>{el.login}</td>
-              <td className={styles.tableCell}>{el.message}</td>
-              <td className={styles.tableCell}>{el.supLevel}</td>
-              <td className={styles.tableCell}>{el.time}</td>
-              <td className={styles.tableCell}>{el.user_id}</td>
+              <td className={styles.tableCell}>{el?.email}</td>
+              <td className={styles.tableCell}>{el?.AcPoint}</td>
+              <td className={styles.tableCell}>{el?.login}</td>
+              <td className={styles.tableCell}>{el?.message}</td>
+              <td className={styles.tableCell}>{el?.supLevel}</td>
+              <td className={styles.tableCell}>{el?.time}</td>
+              <td className={styles.tableCell}>{el?.user_id}</td>
             </tr>
           ))}
         </tbody>
