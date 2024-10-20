@@ -1,6 +1,7 @@
 package com.example.supportfilterservice.flink.function;
 
-import com.example.supportfilterservice.config.AppConfig;
+import com.example.supportfilterservice.domain.DTO.FilterMode;
+import com.example.supportfilterservice.domain.DTO.RegexConfig;
 import com.example.supportfilterservice.domain.entity.DetectedField;
 import com.example.supportfilterservice.domain.entity.SensitiveData;
 import com.example.supportfilterservice.domain.repository.SensitiveDataRepository;
@@ -17,11 +18,11 @@ import java.util.regex.Pattern;
 
 public class RequestProcessor implements MapFunction<String, JsonNode> {
     private final List<String> disabledEndpoints;
-    private final List<AppConfig.RegexConfig> regexConfigs;
+    private final List<RegexConfig> regexConfigs;
     private final SensitiveDataRepository sensitiveDataRepository;
     private final ObjectMapper objectMapper;
 
-    public RequestProcessor(List<String> disabledEndpoints, List<AppConfig.RegexConfig> regexConfigs, SensitiveDataRepository sensitiveDataRepository, ObjectMapper objectMapper) {
+    public RequestProcessor(List<String> disabledEndpoints, List<RegexConfig> regexConfigs, SensitiveDataRepository sensitiveDataRepository, ObjectMapper objectMapper) {
         this.disabledEndpoints = disabledEndpoints;
         this.regexConfigs = regexConfigs;
         this.sensitiveDataRepository = sensitiveDataRepository;
@@ -43,19 +44,19 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
                 List<DetectedField> detectedFields = new ArrayList<>(); // Список для хранения обнаруженных полей
                 boolean isSensitiveDataFound = false; // Флаг для проверки наличия чувствительных данных
 
-                for (AppConfig.RegexConfig regexConfig : regexConfigs) {
+                for (RegexConfig regexConfig : regexConfigs) {
                     String fieldValue = getFieldValue(request, regexConfig.getField());
 
                     if (fieldValue != null && Pattern.matches(regexConfig.getPattern(), fieldValue)) {
                         isSensitiveDataFound = true; // Обнаружены чувствительные данные
 
-                        if (regexConfig.isModeActive(AppConfig.FilterMode.HIDE_DATA)) {
+                        if (regexConfig.isModeActive(FilterMode.HIDE_DATA)) {
                             hideData(request, regexConfig.getField(), regexConfig.getPattern());
                         }
-                        if (regexConfig.isModeActive(AppConfig.FilterMode.REMOVE_FIELD)) {
+                        if (regexConfig.isModeActive(FilterMode.REMOVE_FIELD)) {
                             removeField(request, regexConfig.getField());
                         }
-                        if (regexConfig.isModeActive(AppConfig.FilterMode.REMOVE_OBJECT)) {
+                        if (regexConfig.isModeActive(FilterMode.REMOVE_OBJECT)) {
                             continue; // Переход к следующему объекту, если он должен быть удален
                         }
                         // Добавляем обнаруженные поля в список
@@ -91,7 +92,6 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
         String currentValue = request.get(fieldName).asText();
         Pattern compiledPattern = Pattern.compile(pattern);
         Matcher matcher = compiledPattern.matcher(currentValue);
-
         StringBuffer modifiedValue = new StringBuffer();
         while (matcher.find()) {
             String match = matcher.group();

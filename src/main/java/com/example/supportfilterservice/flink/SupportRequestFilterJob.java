@@ -1,7 +1,6 @@
 package com.example.supportfilterservice.flink;
 
-import com.example.supportfilterservice.config.AppConfig;
-import com.example.supportfilterservice.config.AppConfig.RegexConfig;
+import com.example.supportfilterservice.domain.DTO.RegexConfig;
 import com.example.supportfilterservice.domain.repository.SensitiveDataRepository;
 import com.example.supportfilterservice.flink.function.RequestProcessor;
 import com.example.supportfilterservice.service.EndpointService;
@@ -15,29 +14,24 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class SupportRequestFilterJob {
-
     private final StreamExecutionEnvironment env;
-
-
     private final RegexConfigService regexConfigService;
     private final EndpointService endpointService;
-    private final AppConfig appConfig;
     private final SensitiveDataRepository sensitiveDataRepository;
-    private final AtomicReference<List<AppConfig.RegexConfig>> regexConfigs = new AtomicReference<>(new ArrayList<>());
+    private final AtomicReference<List<RegexConfig>> regexConfigs = new AtomicReference<>(new ArrayList<>());
     private final AtomicReference<List<String>> disabledEndpoints = new AtomicReference<>(new ArrayList<>());
 
-    public SupportRequestFilterJob(StreamExecutionEnvironment env, RegexConfigService regexConfigService, EndpointService endpointService, AppConfig appConfig, SensitiveDataRepository sensitiveDataRepository) {
+    public SupportRequestFilterJob(StreamExecutionEnvironment env, RegexConfigService regexConfigService, EndpointService endpointService,  SensitiveDataRepository sensitiveDataRepository) {
         this.env = env;
         this.regexConfigService = regexConfigService;
         this.endpointService = endpointService;
-        this.appConfig = appConfig;
         this.sensitiveDataRepository = sensitiveDataRepository;
         loadInitialConfigs();
         startRedisListener();
@@ -57,29 +51,18 @@ public class SupportRequestFilterJob {
                 "filtered-support-requests",
                 new SimpleStringSchema(),
                 kafkaProps);
-
         ObjectMapper objectMapper = new ObjectMapper();
-
-//
-
-
-
-
-
-
         env.addSource(consumer)
                 .map(new RequestProcessor(disabledEndpoints.get(), regexConfigs.get(), sensitiveDataRepository, objectMapper))
-                .filter(request -> request != null)
+                .filter(Objects::nonNull)
                 .map(objectMapper::writeValueAsString)
                 .addSink(producer);
-        // TODO Сохранять отфильтрованное в БД
         env.execute("Support Request Filter Job");
     }
     private void loadInitialConfigs() {
         regexConfigs.set(regexConfigService.getRegexConfigs());
         disabledEndpoints.set(endpointService.getDisabledEndpoints());
     }
-
     private void startRedisListener() {
         new Thread(() -> {
             RedisMessageListenerContainer container = new RedisMessageListenerContainer();
@@ -97,5 +80,4 @@ public class SupportRequestFilterJob {
             container.start();
         }).start();
     }
-
 }
