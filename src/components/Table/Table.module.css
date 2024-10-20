@@ -1,0 +1,40 @@
+.table {
+    border-collapse: collapse;
+    border: none;
+    width: 100%;
+    font-family: "Roboto";
+    font-size: 20px;
+    overflow: auto;
+    text-align: left;
+}
+
+.tableRowHeader {
+    background-color: transparent;
+    transition: all 0.25s ease;
+    border-radius: 10px;
+}
+
+.tableHeader {
+    background-color: var(--table);
+    padding: 35px 25px;
+    color: #2c3e50;
+    color: var(--black);
+    border: 1px solid var(--black);
+    text-align: center;
+}
+
+.tableRowItems {
+    cursor: auto;
+}
+
+.tableCell {
+    padding: 12px;
+    font-size: 14px;
+    color: grey;
+    border: 1px solid var(--black);
+}
+thead th {
+    position: sticky;
+    top: 0;
+    background: white;
+}

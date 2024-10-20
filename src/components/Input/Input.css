@@ -1,0 +1,26 @@
+.Input_block {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 342px;
+    width: 100%;
+}
+
+.Input_block input {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid var(--dark-blue);
+    color: var(--dark-blue);
+    font-family: Roboto;
+    padding-right: 2.5rem;
+}
+
+.Input_block div {
+    position: absolute;
+    right: 1rem;
+    width: 20px;
+    height: 20px;
+}
