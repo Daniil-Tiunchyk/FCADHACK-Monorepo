@@ -33,24 +33,28 @@ const Table = ({ data }) => {
        <thead className={styles.tableRowHeader}>
           <tr>
             <th className={styles.tableHeader}>Электронная почта</th>
+            <th className={styles.tableHeader}>Имя</th>
             <th className={styles.tableHeader}>Точка доступа</th>
             <th className={styles.tableHeader}>Логин</th>
-            <th className={styles.tableHeader}> Сообщение</th>
-            <th className={styles.tableHeader}> Уровень поддержки</th>
-            <th className={styles.tableHeader}> Метка времени</th>
-            <th className={styles.tableHeader}> ID пользователя</th>
+            <th className={styles.tableHeader}>Уровень поддержки</th>
+            <th className={styles.tableHeader}>Метка времени</th>
+            <th className={styles.tableHeader}>Пол</th>
+            <th className={styles.tableHeader}>Возраст</th>
+            <th className={styles.tableHeader}>ID пользователя</th>
           </tr>
         </thead>
         <tbody>
           {currentItems.map((el, i) => (
             <tr className={styles.tableRowItems} key={el.i}> {/* ПОМЕНЯТЬ НА user_id */}
               <td className={styles.tableCell}>{el?.email}</td>
-              <td className={styles.tableCell}>{el?.AcPoint}</td>
+              <td className={styles.tableCell}>{el?.name}</td>
+              <td className={styles.tableCell}>{el?.endpoint}</td>
               <td className={styles.tableCell}>{el?.login}</td>
-              <td className={styles.tableCell}>{el?.message}</td>
-              <td className={styles.tableCell}>{el?.supLevel}</td>
-              <td className={styles.tableCell}>{el?.time}</td>
-              <td className={styles.tableCell}>{el?.user_id}</td>
+              <td className={styles.tableCell}>{el?.supportLevel}</td>
+              <td className={styles.tableCell}>{el?.timestamp}</td>
+              <td className={styles.tableCell}>{el?.gender}</td>
+              <td className={styles.tableCell}>{el?.age}</td>
+              <td className={styles.tableCell}>{el?.userID}</td>
             </tr>
           ))}
         </tbody>
