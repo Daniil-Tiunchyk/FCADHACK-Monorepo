@@ -17,9 +17,9 @@ public class SensitiveData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String originalData;
-    // TODO Добавить поле field_name + regex
+    private String field;
+    private String regex;
     private LocalDateTime detectedAt;
 
 }
