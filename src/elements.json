@@ -3,7 +3,6 @@
   "email":"oksana.babykina@yandex.ru",
   "login":"oksana.babykina",
   "name": "Оксана",
-  "timestamp":1691528400,
   "userID":342149180,
   "gender":"Женщина",
   "age": 12
@@ -24,7 +23,6 @@
   "endpoint":"https://api.bestbank.ru/support",
   "login":"oksana.babykina",
   "name": "Оксана",
-  "timestamp":1691528400,
   "userID":342149180,
   "gender":"Женщина",
   "age": 12

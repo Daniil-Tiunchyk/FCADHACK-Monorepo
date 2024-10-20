@@ -4,6 +4,7 @@ import styles from "./Table.module.css";
 
 import TableFooter from "./TableFooter";
 
+
 const Table = ({ data }) => {
   const [currentItems, setCurrentItems] = useState([]);
   const [pageCount, setPageCount] = useState(0);
@@ -24,6 +25,9 @@ const Table = ({ data }) => {
     setItemOffset(newOffset);
   };
 
+const formatDate = (timestamp) => {
+  return new Intl.DateTimeFormat('ru', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp)
+}
 
 
     return (
@@ -51,7 +55,7 @@ const Table = ({ data }) => {
               <td className={styles.tableCell}>{el?.endpoint}</td>
               <td className={styles.tableCell}>{el?.login}</td>
               <td className={styles.tableCell}>{el?.supportLevel}</td>
-              <td className={styles.tableCell}>{el?.timestamp}</td>
+              <td className={styles.tableCell}>{el?.timestamp && formatDate(el?.timestamp)}</td>
               <td className={styles.tableCell}>{el?.gender}</td>
               <td className={styles.tableCell}>{el?.age}</td>
               <td className={styles.tableCell}>{el?.userID}</td>

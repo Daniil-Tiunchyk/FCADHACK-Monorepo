@@ -10,7 +10,6 @@ const TableFooter = ({pageCount,handlePageClick}) => {
   }
   }, [screenWidth])
 
-  console.log(screenWidth)
   return (
     <div className={styles.tableFooter}>
       <ReactPaginate
