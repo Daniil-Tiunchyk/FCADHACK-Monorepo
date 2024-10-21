@@ -1,4 +1,5 @@
 package com.example.supportfilterservice.service;
+
 import com.example.supportfilterservice.domain.DTO.Endpoint;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;

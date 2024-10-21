@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-//TODO Сделать просто запрос на изменения включения
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

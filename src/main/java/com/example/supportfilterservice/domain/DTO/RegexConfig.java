@@ -6,8 +6,6 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
 
-//TODO Ввести id. Мы можем менять и статус, и модификацию. Сможем изменить и регулярку тогда.
-// Поле по сути останется неизменным
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,5 +21,4 @@ public  class RegexConfig {
         return modes.stream()
                 .min((mode1, mode2) -> Integer.compare(mode1.getPriority(), mode2.getPriority()));
     }
-
 }

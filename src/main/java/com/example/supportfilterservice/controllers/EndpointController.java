@@ -1,6 +1,5 @@
 package com.example.supportfilterservice.controllers;
 
-
 import com.example.supportfilterservice.domain.DTO.Endpoint;
 import com.example.supportfilterservice.service.EndpointService;
 import org.springframework.http.HttpStatus;
