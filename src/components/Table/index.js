@@ -83,7 +83,7 @@ const formatDate = (timestamp) => {
         </tbody>
       </table>
       </div>
-      {isOpenModal && <TableItemModal closeModal={setIsOpenModal} selectedItem={selectedItem} />}
+      {isOpenModal && <TableItemModal formatDate={formatDate} closeModal={setIsOpenModal} selectedItem={selectedItem} />}
       <TableFooter pageCount={pageCount} handlePageClick={handlePageClick} />
     </>
     )

@@ -4,16 +4,16 @@ import Button from '../Button/Button';
 
 
 const options = [
-    { value: 'Уровень 1', label: 'Уровень 1' },
-    { value: 'Уровень 2', label: 'Уровень 2' },
-    { value: 'Уровень 3', label: 'Уровень 3' },
-    { value: 'Уровень 4', label: 'Уровень 4' },
-    { value: 'Уровень 5', label: 'Уровень 5' },
-    { value: 'Уровень 6', label: 'Уровень 6' },
-    { value: 'Уровень 7', label: 'Уровень 7' },
-    { value: 'Уровень 8', label: 'Уровень 8' },
-    { value: 'Уровень 9', label: 'Уровень 9' },
-    { value: 'Уровень 10', label: 'Уровень 10' },
+    { value: '1', label: 'Уровень 1' },
+    { value: '2', label: 'Уровень 2' },
+    { value: '3', label: 'Уровень 3' },
+    { value: '4', label: 'Уровень 4' },
+    { value: '5', label: 'Уровень 5' },
+    { value: '6', label: 'Уровень 6' },
+    { value: '7', label: 'Уровень 7' },
+    { value: '8', label: 'Уровень 8' },
+    { value: '9', label: 'Уровень 9' },
+    { value: '10', label: 'Уровень 10' },
   ];
 
 
@@ -67,7 +67,7 @@ const MultiSelect = () => {
       <div className="multi-select" onClick={toggleDropdown}>
         {selectedOptions.length === 0
           ? 'Уровень поддержки'
-          : selectedOptions.join(', ')}
+          : "Уровни:" + selectedOptions.join(', ')}
           <img className={isDropdownOpen ? "open" : ""} src="./arrow.svg" alt="arrow" />
       </div>
       {isDropdownOpen && (

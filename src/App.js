@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css"
-import Button from "./components/Button/Button";
-import CalendarDropdown from "./components/CalendarDropdown/CalendarDropdown";
-import Input from "./components/Input/Input";
-import MultiSelect from "./components/MultiSelect/MultiSelect";
 import Table from "./components/Table/index"
 import data from "./elements.json"
+import TableFilters from "./components/Table/TableFilters/TableFilters";
 
 
 function App() {
@@ -47,28 +44,7 @@ function App() {
           </header>
             <main>
               {isOpenfilters && (
-                <div>
-              <div className="filters_block">
-                <div className="filter_block1">
-                  <div className="calendars_block">
-                  <h4 className="ExplainingText ">Выберите метку времени</h4>
-                      <div className="calendars">
-                        <CalendarDropdown title="Дата начала" />
-                        <CalendarDropdown title="Дата конца" />
-                      </div>
-                </div>
-                  <Input placeholder={"Электронная почта"} type={"email"}/>
-                 <Input placeholder={"Точка доступа"} type={"text"}/>
-                 <MultiSelect/>
-                </div>
-                <div className="filter_block2">
-                    <Input placeholder={"Логин"} type={"text"}/>
-                  <Input placeholder={"Имя"} type={"text"}/>
-                  <Input placeholder={"ID пользователя"} type={"text"}/>
-                </div>
-              </div>
-              <Button className="apply-button apply-button-filters">Применить</Button>
-              </div>
+                  <TableFilters />
               ) }
               {isLoading || <Table data={data}/>}
             </main>
