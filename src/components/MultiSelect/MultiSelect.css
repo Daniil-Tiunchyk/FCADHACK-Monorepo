@@ -136,8 +136,7 @@
 }
 
 .apply-button:hover {
-    background: none;
-    color: var(--firstcolor)
+    background: var(--dark-blue);
 }
 
 

@@ -30,6 +30,9 @@
     gap: 7px;
 }
 
+.calendar-dropdown-toggle:hover  {
+    background: var(--blue);
+}
 
 .dropdown-toggle:hover {
     background-color: #0056b3;

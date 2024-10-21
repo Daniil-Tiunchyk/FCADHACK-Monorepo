@@ -130,6 +130,7 @@ p {
 
 /*  */
 .logo {
+  cursor: pointer;
   color:var(--firstcolor);
 }
 

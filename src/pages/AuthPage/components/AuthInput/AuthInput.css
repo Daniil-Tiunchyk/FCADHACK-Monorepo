@@ -27,3 +27,29 @@
     font-size: 18px;
     color: var(--input);
 }
+
+
+
+@media(max-height:680px) {
+    .authInput_block input {
+        padding: 18px;
+        padding-top: 30px;
+        font-size: 16px;
+    }
+    .authInput_block span {
+        font-size: 14px;
+    }
+   
+}
+
+@media(max-width:1024px) {
+    .authInput_block span {
+            font-size: 14px;
+        }
+        .authInput_block input {
+            padding: 18px;
+            padding-top: 30px;
+            font-size: 16px;
+        }
+      
+}

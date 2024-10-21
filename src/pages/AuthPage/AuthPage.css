@@ -148,3 +148,147 @@
 .authImage_block img {
     width: 80%;
 }
+
+@media(max-height:680px) {
+    .auth_logo {
+            font-size: 24px;
+        }
+    
+        .authform_block h1 {
+            font-size: 26px;
+        }
+
+    .form_save-block span {
+        font-size: 16px;
+    }
+
+    .form_warn-block span {
+        font-size: 16px;
+    }
+
+    .authImage_block {
+        margin-top: 12vh;
+    }
+
+    .authform_block br {
+        display: none;
+    }
+
+    .authform_block button {
+        margin-top: 3.5vh;
+    }
+}
+
+@media(max-height:567px) {
+    .authImage_block {
+        display: none;
+    }
+
+    .sideBar_block {
+        width: 100%;
+    }
+
+    .sideBar_block {
+        align-items: center;
+        justify-content: center;
+        padding: 40px 30px;
+    }
+}
+
+@media(max-width:1220px) {
+    .authform_block h1 {
+        font-size: 26px;
+    }
+}
+
+@media(max-width:1024px) {
+    .form_save-block span {
+        font-size: 21px;
+    }
+
+    .form_warn-block span {
+        font-size: 13px;
+    }
+
+    .authImage_block {
+        margin-top: 12vh;
+    }
+
+    .authform_block br {
+        display: none;
+    }
+
+    .authform_block button {
+        margin-top: 3.5vh;
+    }
+
+    #authcheckbox+label::before {
+        width: 0.7em;
+        height: 0.7em;
+    }
+    .form_save-block {
+        margin: 0;
+    }
+    #authcheckbox+label::before {
+        margin-right: 0.3em;
+        margin-bottom: 2.5px;
+    }
+}
+
+
+@media(max-width:937px) {
+    .authform_block h1 {
+        font-size: 21px;
+    }
+    .authImage_block {
+        width: 50%;
+        margin-top: 16vw;
+    }
+    .authImage_block img {
+        width: 100%;
+    }
+    .sideBar_block {
+        width: 50%;
+    }
+}
+
+@media(max-width:768px) {
+    .sideBar_block {
+        padding: 30px;
+    }
+    .sideBar_inner {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .authImage_block {
+        margin-top: 30vw;
+        width: 45%
+    }
+    .sideBar_block {
+        width: 55%;
+    }
+}
+
+@media(max-width:680px) {
+    .authImage_block {
+        display: none;
+    }
+    .sideBar_block {
+        padding: 0 30px;
+        width: 100%;
+    }
+    .authform_block h1{
+        font-size: 18px;
+    }
+    .auth_logo {
+        margin-bottom: 6vh;
+    }
+}
+
+@media(max-width:400px) {
+    .sideBar_block {
+        padding: 0 20px;
+    }
+}

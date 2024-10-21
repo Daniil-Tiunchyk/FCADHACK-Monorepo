@@ -63,7 +63,7 @@ function App() {
                 </div>
                 <div className="filter_block2">
                     <Input placeholder={"Логин"} type={"text"}/>
-                  <Input placeholder={"Содержимое сообщения"} type={"text"}/>
+                  <Input placeholder={"Имя"} type={"text"}/>
                   <Input placeholder={"ID пользователя"} type={"text"}/>
                 </div>
               </div>
