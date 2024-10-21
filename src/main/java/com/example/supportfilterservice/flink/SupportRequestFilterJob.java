@@ -1,5 +1,6 @@
 package com.example.supportfilterservice.flink;
 
+import com.example.supportfilterservice.domain.DTO.Endpoint;
 import com.example.supportfilterservice.domain.DTO.RegexConfig;
 import com.example.supportfilterservice.domain.repository.SensitiveDataRepository;
 import com.example.supportfilterservice.flink.function.RequestProcessor;
@@ -26,7 +27,7 @@ public class SupportRequestFilterJob {
     private final EndpointService endpointService;
     private final SensitiveDataRepository sensitiveDataRepository;
     private final AtomicReference<List<RegexConfig>> regexConfigs = new AtomicReference<>(new ArrayList<>());
-    private final AtomicReference<List<String>> disabledEndpoints = new AtomicReference<>(new ArrayList<>());
+    private final AtomicReference<List<Endpoint>> disabledEndpoints = new AtomicReference<>(new ArrayList<>());
 
     public SupportRequestFilterJob(StreamExecutionEnvironment env, RegexConfigService regexConfigService, EndpointService endpointService,  SensitiveDataRepository sensitiveDataRepository) {
         this.env = env;
