@@ -10,6 +10,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public  class RegexConfig {
+    private boolean isEnabled;
     private String field;
     private Set<FilterMode> modes = EnumSet.noneOf(FilterMode.class); // Моды фильтрации
     private String pattern;
