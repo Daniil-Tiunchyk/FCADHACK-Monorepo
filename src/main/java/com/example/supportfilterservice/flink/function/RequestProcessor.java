@@ -14,6 +14,7 @@ import org.apache.flink.api.common.functions.MapFunction;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,54 +42,63 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
                 continue;
             }
 
-            List<DetectedField> detectedFields = processRequest(request);
+            // Обработка запроса и получение списка обнаруженных полей
+            List<DetectedField> detectedFields = new ArrayList<>();
+            boolean isRemoved = processRequest(request, detectedFields);
 
-            // Если обнаружены чувствительные данные, создаем объект SensitiveData и сохраняем его
             if (!detectedFields.isEmpty()) {
                 saveSensitiveData(request, detectedFields);
             }
 
-            processedRequests.add(request); // Добавляем обработанный объект в список
+            // Если объект был удалён, сохраняем его в БД
+            if (!isRemoved) {
+                processedRequests.add(request);
+            }
         }
 
         // Возвращаем массив обработанных запросов в виде строки
         return objectMapper.valueToTree(processedRequests);
     }
 
-    private boolean shouldSkipRequest(JsonNode request) {
-        String endpointText = request.get("Endpoint").asText();
-        Endpoint endpoint = new Endpoint(endpointText, true);
-        return disabledEndpoints.contains(endpoint);
-    }
+    private boolean processRequest(JsonNode request, List<DetectedField> detectedFields) {
+        boolean shouldRemove = false; // Флаг для удаления запроса
 
-    private List<DetectedField> processRequest(JsonNode request) {
-        List<DetectedField> detectedFields = new ArrayList<>();
         for (RegexConfig regexConfig : regexConfigs) {
             if (!regexConfig.isEnabled()) {
                 continue;
             }
-
+            if(shouldRemove){
+                break;
+            }
             String fieldValue = getFieldValue(request, regexConfig.getField());
             if (fieldValue != null && Pattern.matches(regexConfig.getPattern(), fieldValue)) {
-                handleSensitiveData(request, regexConfig, detectedFields);
+                // Обработка чувствительных данных
+                shouldRemove = handleSensitiveData(request, regexConfig, detectedFields) || shouldRemove;
             }
         }
-        return detectedFields;
+        return shouldRemove; // Возвращаем, нужно ли удалять объект
     }
 
-    private void handleSensitiveData(JsonNode request, RegexConfig regexConfig, List<DetectedField> detectedFields) {
-        if (regexConfig.isModeActive(FilterMode.HIDE_DATA)) {
+    private boolean handleSensitiveData(JsonNode request, RegexConfig regexConfig, List<DetectedField> detectedFields) {
+        boolean shouldRemove = false;
+        if (regexConfig.isModeActive(FilterMode.REMOVE_OBJECT)) {
+            shouldRemove = true; // Установить флаг удаления
+        } else if (regexConfig.isModeActive(FilterMode.REMOVE_FIELD)) {
+            removeField(request, regexConfig.getField());
+        } else if (regexConfig.isModeActive(FilterMode.HIDE_DATA)) {
             hideData(request, regexConfig.getField(), regexConfig.getPattern());
         }
-        if (regexConfig.isModeActive(FilterMode.REMOVE_FIELD)) {
-            removeField(request, regexConfig.getField());
-        }
-        if (regexConfig.isModeActive(FilterMode.REMOVE_OBJECT)) {
-            // Переход к следующему объекту, если он должен быть удален
-            return;
-        }
-        // Добавляем обнаруженные поля в список
-        detectedFields.add(new DetectedField(regexConfig.getField(), regexConfig.getPattern()));
+
+        // Получаем режим с наименьшим приоритетом
+        Optional<FilterMode> lowestModeOpt = regexConfig.getLowestPriorityMode();
+        // Добавляем обнаруженные поля в список с указанием режима
+        lowestModeOpt.ifPresent(filterMode -> detectedFields.add(new DetectedField(regexConfig.getField(), regexConfig.getPattern(), filterMode)));
+        return shouldRemove; // Возвращаем, нужно ли удалять объект
+    }
+    private boolean shouldSkipRequest(JsonNode request) {
+        String endpointText = request.get("Endpoint").asText();
+        Endpoint endpoint = new Endpoint(endpointText, true);
+        return disabledEndpoints.contains(endpoint);
     }
 
     private void saveSensitiveData(JsonNode request, List<DetectedField> detectedFields) {

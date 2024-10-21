@@ -3,13 +3,16 @@ package com.example.supportfilterservice.domain.DTO;
 import lombok.*;
 
 import java.util.EnumSet;
+import java.util.Optional;
 import java.util.Set;
 
-
+//TODO Ввести id. Мы можем менять и статус, и модификацию. Сможем изменить и регулярку тогда.
+// Поле по сути останется неизменным
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public  class RegexConfig {
+    private Long id;
     private boolean isEnabled;
     private String field;
     private Set<FilterMode> modes = EnumSet.noneOf(FilterMode.class); // Моды фильтрации
@@ -17,4 +20,9 @@ public  class RegexConfig {
     public boolean isModeActive(FilterMode mode) {
         return this.modes.contains(mode);
     }
+    public Optional<FilterMode> getLowestPriorityMode() {
+        return modes.stream()
+                .min((mode1, mode2) -> Integer.compare(mode1.getPriority(), mode2.getPriority()));
+    }
+
 }
