@@ -12,7 +12,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public  class RegexConfig {
-    private Long id;
     private boolean isEnabled;
     private String field;
     private Set<FilterMode> modes = EnumSet.noneOf(FilterMode.class); // Моды фильтрации
