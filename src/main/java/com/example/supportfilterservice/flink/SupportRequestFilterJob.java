@@ -61,8 +61,8 @@ public class SupportRequestFilterJob {
         env.execute("Support Request Filter Job");
     }
     private void loadInitialConfigs() {
-        regexConfigs.set(regexConfigService.getRegexConfigs());
-        disabledEndpoints.set(endpointService.getDisabledEndpoints());
+        regexConfigs.set(regexConfigService.getSortedRegexConfigs());
+        disabledEndpoints.set(endpointService.getAllEndpoints());
     }
     private void startRedisListener() {
         new Thread(() -> {
@@ -70,12 +70,12 @@ public class SupportRequestFilterJob {
 
             // Слушатель для обновления regexConfigs
             container.addMessageListener((message, pattern) -> {
-                regexConfigs.set(regexConfigService.getRegexConfigs());
+                regexConfigs.set(regexConfigService.getSortedRegexConfigs());
             }, new ChannelTopic("regexConfigUpdates"));
 
             // Слушатель для обновления disabledEndpoints
             container.addMessageListener((message, pattern) -> {
-                disabledEndpoints.set(endpointService.getDisabledEndpoints());
+                disabledEndpoints.set(endpointService.getAllEndpoints());
             }, new ChannelTopic("disabledEndpointsUpdates"));
 
             container.start();
