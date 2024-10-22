@@ -7,6 +7,7 @@ import com.example.supportfilterservice.flink.function.RequestProcessor;
 import com.example.supportfilterservice.service.EndpointService;
 import com.example.supportfilterservice.service.RegexConfigService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.PostConstruct;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.*;
@@ -41,11 +42,14 @@ public class SupportRequestFilterJob {
         this.endpointService = endpointService;
         this.jedisConnectionFactory = jedisConnectionFactory;
         this.sensitiveDataRepository = sensitiveDataRepository;
+    }
+    @PostConstruct
+    private void init() {
         try {
             loadInitialConfigs();
             startRedisListener();
         } catch (Exception e) {
-            e.printStackTrace(); // Логируем ошибку
+            e.printStackTrace();
             throw new RuntimeException("Ошибка инициализации SupportRequestFilterJob", e);
         }
     }
