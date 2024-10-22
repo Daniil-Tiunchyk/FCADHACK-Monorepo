@@ -3,7 +3,7 @@ FROM eclipse-temurin:21-jdk-alpine
 # Устанавливаем рабочую директорию
 WORKDIR /app
 # Копируем файл сборки приложения
-COPY target/api-gateway-0.0.1-SNAPSHOT.jar app.jar
+COPY target/api-gateway-1.0-SNAPSHOT.jar app.jar
 
 # Запускаем приложение
 ENTRYPOINT ["java", "-jar", "app.jar"]
