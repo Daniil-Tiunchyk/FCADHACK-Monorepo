@@ -4,30 +4,30 @@ springdoc:
 spring:
   cloud:
     gateway:
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: "http://localhost:4200"
-            allowedHeaders: "*"
-            allowedMethods:
-              - GET
-              - POST
-              - DELETE
-              - PUT
+      #globalcors:
+      #  corsConfigurations:
+      #    '[/**]':
+      #      allowedOrigins: "http://localhost:4200"
+      #      allowedHeaders: "*"
+      #      allowedMethods:
+      #        - GET
+      #        - POST
+      #        - DELETE
+      #        - PUT
       routes:
-        - id: auth-server-no-filter
-          uri: lb://auth-service
+        - id: dataingestionservice
+          uri: lb://dataingestionservice
           predicates:
             - Path=/api/identity/**,
 
 
-        - id: admin-panel
-          uri: lb://admin-service
+        - id: support-service
+          uri: lb://support-service
           predicates:
             - Path=/api/support-messages/**,/api/support-messages,/api/result-messages,/api/result-messages/**
 
-        - id: main-server
-          uri: lb://main-service
+        - id: support-filter-service
+          uri: lb://support-filter-service
           predicates:
             - Path=/api/**
           filters:
