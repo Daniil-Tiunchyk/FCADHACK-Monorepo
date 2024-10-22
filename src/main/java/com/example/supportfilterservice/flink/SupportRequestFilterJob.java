@@ -70,7 +70,7 @@ public class SupportRequestFilterJob {
         disabledEndpoints.set(endpointService.getAllEndpoints());
     }
     private void startRedisListener() {
-       /* new Thread(() -> {
+        new Thread(() -> {
             RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 
             // Слушатель для обновления regexConfigs
@@ -84,6 +84,6 @@ public class SupportRequestFilterJob {
             }, new ChannelTopic("disabledEndpointsUpdates"));
 
             container.start();
-        }).start();*/
+        }).start();
     }
 }
