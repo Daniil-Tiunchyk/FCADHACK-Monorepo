@@ -1,0 +1,144 @@
+version: '3.8'
+networks:
+  backend:
+    driver: bridge
+services:
+  eureka-server:
+    build:
+      context: Eureka-Server
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      - backend
+
+  dataingestionservice:
+    container_name: dataingestionservice
+    build:
+      context: Data-Ingestion-Service-Java
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "broker:29092"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://dataingestionservice-database:5432/testFCAD"
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "System123321"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka-server:8761/eureka/"
+    depends_on:
+      - dataingestionservice-database
+      - broker
+    networks:
+      - backend
+
+  dataingestionservice-database:
+    image: postgres:15
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: testFCAD
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: System123321
+    networks:
+      - backend
+
+
+  support-filter-service:
+    container_name: support-filter-service
+    build:
+      context: Support-Filter-Service-Java
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "broker:29092"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://support-filter-service-database:5432/support_db"
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "System123321"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka-server:8761/eureka/"
+    depends_on:
+      - support-filter-service-database
+      - broker
+    networks:
+      - backend
+
+
+  support-filter-service-database:
+    image: postgres:15
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: support_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: System123321
+    networks:
+      - backend
+
+  support-service:
+    container_name: support-service
+    build:
+      context: Admin-Panel-Backend-Java
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: "broker:29092"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://support-service:5432/support_db"
+      SPRING_DATASOURCE_USERNAME: "postgres"
+      SPRING_DATASOURCE_PASSWORD: "System123321"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka-server:8761/eureka/"
+    depends_on:
+      - support-filter-service-database
+      - broker
+    networks:
+      - backend
+
+
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: API-Gateway-Java
+      dockerfile: Dockerfile
+    ports:
+      - "8765:8765"
+    environment:
+      SPRING_APPLICATION_NAME: "api-gateway"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka-server:8761/eureka/"
+      SPRING_CLOUD_CONFIG_URI: "http://config-server:8888"
+    networks:
+      - backend
+    depends_on:
+      - support-service
+      - support-filter-service
+      - dataingestionservice
+
+
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - backend
+
+  broker:
+    image: confluentinc/cp-kafka:7.0.1
+    container_name: broker
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+    networks:
+      - backend
