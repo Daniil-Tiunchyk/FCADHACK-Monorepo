@@ -1,4 +1,4 @@
-package com.example.apigateway.config;
+package com.example.api_gateway.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.cache.CacheManager;

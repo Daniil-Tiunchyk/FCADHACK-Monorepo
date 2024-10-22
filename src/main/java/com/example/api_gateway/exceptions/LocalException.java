@@ -1,4 +1,4 @@
-package com.example.apigateway.exceptions;
+package com.example.api_gateway.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

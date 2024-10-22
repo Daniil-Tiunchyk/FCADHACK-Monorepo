@@ -1,8 +1,9 @@
-package com.example.apigateway.filter;
+package com.example.api_gateway.filter;
 
 
-import com.example.apigateway.exceptions.LocalException;
-import com.example.apigateway.utils.JWTUtil;
+
+import com.example.api_gateway.exceptions.LocalException;
+import com.example.api_gateway.utils.JWTUtil;
 import lombok.Data;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;

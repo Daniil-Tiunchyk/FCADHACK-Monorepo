@@ -1,7 +1,8 @@
-package com.example.apigateway.exceptions;
+package com.example.api_gateway.exceptions;
 
 
-import com.example.apigateway.DTO.ErrorDTO;
+
+import com.example.api_gateway.DTO.ErrorDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

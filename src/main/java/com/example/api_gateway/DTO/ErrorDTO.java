@@ -1,4 +1,4 @@
-package com.example.apigateway.DTO;
+package com.example.api_gateway.DTO;
 
 import lombok.Data;
 
