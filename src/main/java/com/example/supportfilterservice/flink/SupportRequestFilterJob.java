@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.*;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Component;
@@ -25,14 +26,19 @@ public class SupportRequestFilterJob {
     private final StreamExecutionEnvironment env;
     private final RegexConfigService regexConfigService;
     private final EndpointService endpointService;
+    private final JedisConnectionFactory jedisConnectionFactory;
     private final SensitiveDataRepository sensitiveDataRepository;
     private final AtomicReference<List<RegexConfig>> regexConfigs = new AtomicReference<>(new ArrayList<>());
     private final AtomicReference<List<Endpoint>> disabledEndpoints = new AtomicReference<>(new ArrayList<>());
 
-    public SupportRequestFilterJob(StreamExecutionEnvironment env, RegexConfigService regexConfigService, EndpointService endpointService, SensitiveDataRepository sensitiveDataRepository) {
+    public SupportRequestFilterJob(StreamExecutionEnvironment env, RegexConfigService regexConfigService,
+                                   EndpointService endpointService, JedisConnectionFactory jedisConnectionFactory,
+                                   SensitiveDataRepository sensitiveDataRepository
+                                   )  {
         this.env = env;
         this.regexConfigService = regexConfigService;
         this.endpointService = endpointService;
+        this.jedisConnectionFactory = jedisConnectionFactory;
         this.sensitiveDataRepository = sensitiveDataRepository;
         try {
             loadInitialConfigs();
@@ -72,7 +78,7 @@ public class SupportRequestFilterJob {
     private void startRedisListener() {
         new Thread(() -> {
             RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-
+            container.setConnectionFactory(jedisConnectionFactory);
             // Слушатель для обновления regexConfigs
             container.addMessageListener((message, pattern) -> {
                 regexConfigs.set(regexConfigService.getSortedRegexConfigs());
