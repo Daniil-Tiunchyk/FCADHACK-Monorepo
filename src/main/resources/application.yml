@@ -24,7 +24,7 @@ spring:
         - id: admin-panel
           uri: lb://admin-service
           predicates:
-            - Path=/api/support-messages/**,/api/support-messages
+            - Path=/api/support-messages/**,/api/support-messages,/api/result-messages,/api/result-messages/**
 
         - id: main-server
           uri: lb://main-service
