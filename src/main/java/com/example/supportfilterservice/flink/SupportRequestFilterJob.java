@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.*;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -26,13 +27,13 @@ public class SupportRequestFilterJob {
     private final StreamExecutionEnvironment env;
     private final RegexConfigService regexConfigService;
     private final EndpointService endpointService;
-    private final JedisConnectionFactory jedisConnectionFactory;
+    private final RedisConnectionFactory jedisConnectionFactory;
     private final SensitiveDataRepository sensitiveDataRepository;
     private final AtomicReference<List<RegexConfig>> regexConfigs = new AtomicReference<>(new ArrayList<>());
     private final AtomicReference<List<Endpoint>> disabledEndpoints = new AtomicReference<>(new ArrayList<>());
 
     public SupportRequestFilterJob(StreamExecutionEnvironment env, RegexConfigService regexConfigService,
-                                   EndpointService endpointService, JedisConnectionFactory jedisConnectionFactory,
+                                   EndpointService endpointService, RedisConnectionFactory jedisConnectionFactory,
                                    SensitiveDataRepository sensitiveDataRepository
                                    )  {
         this.env = env;
