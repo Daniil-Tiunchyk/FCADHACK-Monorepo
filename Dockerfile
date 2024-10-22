@@ -7,8 +7,5 @@ WORKDIR /app
 # Копируем файл сборки приложения
 COPY target/support-service-0.0.1-SNAPSHOT.jar app.jar
 
-# Открываем порт 8080 для доступа
-EXPOSE 8080
-
 # Запускаем приложение
 ENTRYPOINT ["java", "-jar", "app.jar"]
