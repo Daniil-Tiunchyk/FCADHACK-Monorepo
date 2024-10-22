@@ -12,7 +12,6 @@ import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.*;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Component;
@@ -29,30 +28,25 @@ public class SupportRequestFilterJob {
     private final RegexConfigService regexConfigService;
     private final EndpointService endpointService;
     private final RedisConnectionFactory jedisConnectionFactory;
+    private final RedisMessageListenerContainer container; // Используем бин
     private final SensitiveDataRepository sensitiveDataRepository;
     private final AtomicReference<List<RegexConfig>> regexConfigs = new AtomicReference<>(new ArrayList<>());
     private final AtomicReference<List<Endpoint>> disabledEndpoints = new AtomicReference<>(new ArrayList<>());
 
     public SupportRequestFilterJob(StreamExecutionEnvironment env, RegexConfigService regexConfigService,
                                    EndpointService endpointService, RedisConnectionFactory jedisConnectionFactory,
-                                   SensitiveDataRepository sensitiveDataRepository
+                                   RedisMessageListenerContainer container, SensitiveDataRepository sensitiveDataRepository
                                    )  {
         this.env = env;
         this.regexConfigService = regexConfigService;
         this.endpointService = endpointService;
         this.jedisConnectionFactory = jedisConnectionFactory;
+        this.container = container;
         this.sensitiveDataRepository = sensitiveDataRepository;
+        loadInitialConfigs();
+        startRedisListener();
     }
-    @PostConstruct
-    private void init() {
-        try {
-            loadInitialConfigs();
-            startRedisListener();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Ошибка инициализации SupportRequestFilterJob", e);
-        }
-    }
+
 
     public void execute() throws Exception {
         Properties kafkaProps = new Properties();
@@ -82,19 +76,19 @@ public class SupportRequestFilterJob {
     }
     private void startRedisListener() {
         new Thread(() -> {
-            RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-            container.setConnectionFactory(jedisConnectionFactory);
-            // Слушатель для обновления regexConfigs
+            // Добавляем слушатели для обновления конфигураций
             container.addMessageListener((message, pattern) -> {
                 regexConfigs.set(regexConfigService.getSortedRegexConfigs());
             }, new ChannelTopic("regexConfigUpdates"));
 
-            // Слушатель для обновления disabledEndpoints
             container.addMessageListener((message, pattern) -> {
                 disabledEndpoints.set(endpointService.getAllEndpoints());
             }, new ChannelTopic("disabledEndpointsUpdates"));
 
-            container.start();
+            // Запускаем контейнер, если он еще не запущен
+            if (!container.isRunning()) {
+                container.start();
+            }
         }).start();
     }
 }
