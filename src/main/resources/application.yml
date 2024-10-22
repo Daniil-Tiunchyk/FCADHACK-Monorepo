@@ -15,7 +15,23 @@ spring:
               - DELETE
               - PUT
       routes:
+        - id: auth-server-no-filter
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/identity/**,
 
+
+        - id: admin-panel
+          uri: lb://admin-service
+          predicates:
+            - Path=/api/support-messages/**,/api/support-messages
+
+        - id: main-server
+          uri: lb://main-service
+          predicates:
+            - Path=/api/**
+          filters:
+            - name: AuthenticationFilter
           #- id: auth-server-registration
           #  uri: lb://authorization-service
           #  predicates:
