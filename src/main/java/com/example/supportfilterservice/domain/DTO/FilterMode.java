@@ -1,6 +1,8 @@
 package com.example.supportfilterservice.domain.DTO;
 
-public enum FilterMode {
+import java.io.Serializable;
+
+public enum FilterMode  implements Serializable {
     HIDE_DATA(3),      // Скрывать данные
     REMOVE_FIELD(2),   // Удалять поля
     REMOVE_OBJECT(1);  // Удалять объект
