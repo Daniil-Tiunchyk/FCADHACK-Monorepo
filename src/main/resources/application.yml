@@ -18,7 +18,7 @@ spring:
         - id: dataingestionservice
           uri: lb://dataingestionservice
           predicates:
-            - Path=/api/identity/**,
+            - Path=/api/identity/**,/api/support-requests
 
 
         - id: support-service
