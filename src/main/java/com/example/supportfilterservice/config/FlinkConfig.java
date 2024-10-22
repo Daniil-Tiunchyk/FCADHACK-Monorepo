@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Configuration;
 public class FlinkConfig {
     @Bean
     public StreamExecutionEnvironment streamExecutionEnvironment() {
-        return StreamExecutionEnvironment.getExecutionEnvironment();
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        // Логирование или отладка
+        System.out.println("StreamExecutionEnvironment создан: " + env);
+        return env;
     }
 }

@@ -29,13 +29,18 @@ public class SupportRequestFilterJob {
     private final AtomicReference<List<RegexConfig>> regexConfigs = new AtomicReference<>(new ArrayList<>());
     private final AtomicReference<List<Endpoint>> disabledEndpoints = new AtomicReference<>(new ArrayList<>());
 
-    public SupportRequestFilterJob(StreamExecutionEnvironment env, RegexConfigService regexConfigService, EndpointService endpointService,  SensitiveDataRepository sensitiveDataRepository) {
+    public SupportRequestFilterJob(StreamExecutionEnvironment env, RegexConfigService regexConfigService, EndpointService endpointService, SensitiveDataRepository sensitiveDataRepository) {
         this.env = env;
         this.regexConfigService = regexConfigService;
         this.endpointService = endpointService;
         this.sensitiveDataRepository = sensitiveDataRepository;
-        loadInitialConfigs();
-        startRedisListener();
+        try {
+            loadInitialConfigs();
+            startRedisListener();
+        } catch (Exception e) {
+            e.printStackTrace(); // Логируем ошибку
+            throw new RuntimeException("Ошибка инициализации SupportRequestFilterJob", e);
+        }
     }
 
     public void execute() throws Exception {
@@ -65,7 +70,7 @@ public class SupportRequestFilterJob {
         disabledEndpoints.set(endpointService.getAllEndpoints());
     }
     private void startRedisListener() {
-        new Thread(() -> {
+       /* new Thread(() -> {
             RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 
             // Слушатель для обновления regexConfigs
@@ -79,6 +84,6 @@ public class SupportRequestFilterJob {
             }, new ChannelTopic("disabledEndpointsUpdates"));
 
             container.start();
-        }).start();
+        }).start();*/
     }
 }
