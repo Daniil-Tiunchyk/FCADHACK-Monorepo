@@ -1,3 +1,4 @@
+/*
 package com.example.supportservice.web.listener;
 
 import com.example.supportservice.domain.entity.SupportMessage;
@@ -58,3 +59,4 @@ public class KafkaMessageListener {
         private String UserID;
     }
 }
+*/

@@ -3,7 +3,9 @@ package com.example.supportservice.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "support_messages")
@@ -24,13 +26,40 @@ public class SupportMessage {
 
     private String login;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")  // Убираем ограничение на длину
     private String message;
 
     private String supportLevel;
 
-    private LocalDateTime timestamp;
+    private Instant timestamp; // Используем Instant для соответствия
 
-    private String userId;
+    @Column(name = "user_id")
+    private String userId; // Убедитесь, что тип соответствует вашим данным
 
+    @Column(name = "phone_number", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    private String phoneNumber;
+
+    @Column(name = "first_name", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    private String firstName;
+
+    @Column(name = "last_name", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    private String lastName;
+
+    @Column(name = "middle_name", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    private String middleName;
+
+    @Column(name = "gender", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    private String gender;
+
+    @Column(name = "age", nullable = true)
+    private Integer age;
+
+    @Column(name = "birth_date", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    private String birthDate;
+
+    @ElementCollection
+    @CollectionTable(name = "detected_fields", joinColumns = @JoinColumn(name = "sensitive_data_id"))
+    private List<DetectedField> detectedFields;
+
+    private LocalDateTime detectedAt;
 }
