@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.api.common.functions.MapFunction;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,15 +103,21 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
     }
 
     private void saveSensitiveData(JsonNode request, List<DetectedField> detectedFields) {
-        SensitiveData sensitiveData = SensitiveData.builder()
-                .originalData(request.toString()) // Сохраняем оригинальные данные
-                .detectedFields(detectedFields) // Сохраняем список обнаруженных полей
-                .detectedAt(LocalDateTime.now()) // Текущая дата и время
-                .build();
+        try {
+            // Преобразуем JsonNode в объект SensitiveData
+            SensitiveData sensitiveData = objectMapper.treeToValue(request, SensitiveData.class);
 
-        sensitiveDataRepository.save(sensitiveData); // Сохраняем в БД
+            // Дополняем объект дополнительными полями
+            sensitiveData.setDetectedFields(detectedFields);
+            sensitiveData.setDetectedAt(LocalDateTime.now());
+
+            // Сохраняем в БД
+            sensitiveDataRepository.save(sensitiveData);
+        } catch (IOException e) {
+            // Обработка ошибок десериализации
+            e.printStackTrace();
+        }
     }
-
     private String getFieldValue(JsonNode request, String fieldName) {
         JsonNode field = request.get(fieldName);
         return field != null ? field.asText() : null;
