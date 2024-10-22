@@ -7,6 +7,8 @@ import {
 
 import App from './App';
 import AuthPage from './pages/AuthPage/AuthPage';
+import BlockUrlPage from './pages/BlockUrlPage/BlockUrlPage';
+import ConfigureFilterPage from './pages/ConfigureFIlter/ConfigureFilterPage';
 
 const router = createBrowserRouter([
   {
@@ -16,7 +18,15 @@ const router = createBrowserRouter([
   {
     path: '/auth',
     element: <AuthPage />,
-  }
+  },
+  {
+    path: '/blockUrl',
+    element: <BlockUrlPage />,
+  },
+  {
+    path: '/conFilter',
+    element: <ConfigureFilterPage />,
+  },
 ]);
 
 

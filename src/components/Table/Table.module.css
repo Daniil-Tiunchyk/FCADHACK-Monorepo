@@ -11,8 +11,8 @@
 .tableRowHeader {
     background-color: transparent;
     transition: all 0.25s ease;
-    border-radius: 10px;
 }
+
 
 .tableHeader {
     background-color: var(--table);
@@ -42,3 +42,36 @@ thead th {
     top: 0;
     background: white;
 }
+
+
+
+/* blockurlpage */
+.urlDelete {
+    text-align: center;
+    cursor: pointer;
+}
+
+.blockUrlRowItems:hover {
+    background: #fff;
+    cursor: default;
+}
+
+.blockUrlRowItems td:first-of-type {
+    width: 70%;
+}
+.blockUrlRowItems td:nth-child(2) {
+    width: 15%;
+    text-align: center;
+}
+
+.checkboxUrlTable+label::before {
+    width: 2em !important;
+    height: 2em !important;
+}
+.blockUrlTable th:nth-child(1) {
+    font-family: 'Open Sans';
+    font-size: 32px;
+    color: var(--input);
+}
+
+/*  */
