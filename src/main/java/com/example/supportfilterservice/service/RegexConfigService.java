@@ -18,7 +18,8 @@ public class RegexConfigService {
     @Qualifier("regexConfigUpdatesTopic")
     private final ChannelTopic regexConfigUpdatesTopic;
 
-    public RegexConfigService(RedisTemplate<String, List<RegexConfig>> redisTemplate, ChannelTopic regexConfigUpdatesTopic) {
+    public RegexConfigService(@Qualifier("regexConfigRedisTemplate") RedisTemplate<String, List<RegexConfig>> redisTemplate,
+                             ChannelTopic regexConfigUpdatesTopic) {
         this.redisTemplate = redisTemplate;
         this.regexConfigUpdatesTopic = regexConfigUpdatesTopic;
     }

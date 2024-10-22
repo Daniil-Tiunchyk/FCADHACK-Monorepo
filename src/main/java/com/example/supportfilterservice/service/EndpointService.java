@@ -15,7 +15,8 @@ public class EndpointService {
     @Qualifier("disabledEndpointsUpdatesTopic")
     private final ChannelTopic disabledEndpointsUpdatesTopic;
 
-    public EndpointService(RedisTemplate<String, List<Endpoint>> redisTemplate, ChannelTopic disabledEndpointsUpdatesTopic) {
+    public EndpointService(@Qualifier("endpointRedisTemplate") RedisTemplate<String, List<Endpoint>> redisTemplate,
+                           ChannelTopic disabledEndpointsUpdatesTopic) {
         this.redisTemplate = redisTemplate;
         this.disabledEndpointsUpdatesTopic = disabledEndpointsUpdatesTopic;
     }

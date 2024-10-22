@@ -1,5 +1,6 @@
 package com.example.supportfilterservice.config;
 
+import com.example.supportfilterservice.domain.DTO.Endpoint;
 import com.example.supportfilterservice.domain.DTO.RegexConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,8 +13,15 @@ import java.util.List;
 @Configuration
 public class RedisConfig {
 
+
     @Bean
-    public RedisTemplate<String, List<RegexConfig>> redisTemplate(RedisConnectionFactory connectionFactory) {
+    public RedisTemplate<String, List<Endpoint>> endpointRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, List<Endpoint>> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        return template;
+    }
+    @Bean
+    public RedisTemplate<String, List<RegexConfig>> regexConfigRedisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, List<RegexConfig>> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         return template;
