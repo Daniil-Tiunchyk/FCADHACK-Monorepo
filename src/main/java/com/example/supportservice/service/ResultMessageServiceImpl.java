@@ -11,12 +11,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
 public class ResultMessageServiceImpl implements ResultMessageService {
     private final ResultMessageRepository repository;
     private final ObjectMapper objectMapper;
+    private static final Logger logger = Logger.getLogger(ResultMessageServiceImpl.class.getName());
 
     public ResultMessageServiceImpl(ResultMessageRepository repository, ObjectMapper objectMapper) {
         this.repository = repository;
@@ -48,12 +50,17 @@ public class ResultMessageServiceImpl implements ResultMessageService {
     @KafkaListener(topics = "filtered-support-requests", groupId = "support-filter-group")
     public void listen(String messageJson) {
         try {
+            System.out.println("-------------------------------------------------------------------");
+            System.out.println("-------------------------------------------------------------------");
+            System.out.println("-------------------------------------------------------------------");
+            System.out.println("-------------------------------------------------------------------");
+            logger.info("До трансформации  " + messageJson);
             // Преобразование JSON строки в JsonNode
             JsonNode requestArray = objectMapper.readTree(messageJson);
-
+            logger.info("После трансформации  " + requestArray);
             // Извлечение списка ResultMessage
             List<ResultMessage> messages = parseToResultMessages(requestArray);
-
+            logger.info("После парсинга  " + messages);
             // Сохранение сообщений
             for (ResultMessage message : messages) {
                 saveMessage(message);
