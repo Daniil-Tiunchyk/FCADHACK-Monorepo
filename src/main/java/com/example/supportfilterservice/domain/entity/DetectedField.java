@@ -8,12 +8,14 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @NoArgsConstructor
 @Entity
 @Embeddable
 @Data
 @AllArgsConstructor
+@ToString
 public class DetectedField {
     private String field;
     private String regex;

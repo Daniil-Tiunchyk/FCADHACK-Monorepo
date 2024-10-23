@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +25,7 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
     private final List<RegexConfig> regexConfigs;
     private final SensitiveDataRepository sensitiveDataRepository;
     private final ObjectMapper objectMapper;
+    private static final Logger logger = Logger.getLogger(RequestProcessor.class.getName()); // Логгер
 
     public RequestProcessor(List<Endpoint> disabledEndpoints, List<RegexConfig> regexConfigs, SensitiveDataRepository sensitiveDataRepository, ObjectMapper objectMapper) {
         this.disabledEndpoints = disabledEndpoints;
@@ -34,12 +36,14 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
 
     @Override
     public JsonNode map(String value) throws Exception {
-        // Преобразуем строку в массив JSON
+        logger.info("Пришло value: " + value); // Логирование входящего запроса
+
         JsonNode requestArray = objectMapper.readTree(value);
         List<JsonNode> processedRequests = new ArrayList<>();
 
         for (JsonNode request : requestArray) {
             if (shouldSkipRequest(request)) {
+                logger.warning("Скип request: " + request); // Логирование пропуска запроса
                 continue;
             }
             JsonNode copyRequest = request.deepCopy();
@@ -74,6 +78,7 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
                 }
                 String fieldValue = getFieldValue(request, regexConfig.getField());
                 if (fieldValue != null && Pattern.matches(regexConfig.getPattern(), fieldValue)) {
+                    logger.info("Чувствительные данные для поля: " + regexConfig.getField()); // Логирование обнаруженных данных
                     // Обработка чувствительных данных
                     shouldRemove = handleSensitiveData(request, regexConfig, detectedFields) || shouldRemove;
                 }
@@ -87,7 +92,9 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
         boolean shouldRemove = false;
         if (regexConfig.isModeActive(FilterMode.REMOVE_OBJECT)) {
             shouldRemove = true; // Установить флаг удаления
+            logger.info("Удаление объекта."); // Логирование удаления объекта
         } else if (regexConfig.isModeActive(FilterMode.REMOVE_FIELD)) {
+            logger.info("Поле удалено removed: " + regexConfig.getField()); // Логирование удаления поля
             removeField(request, regexConfig.getField());
         } else if (regexConfig.isModeActive(FilterMode.HIDE_DATA)) {
             hideData(request, regexConfig.getField(), regexConfig.getPattern());
@@ -102,8 +109,12 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
     private boolean shouldSkipRequest(JsonNode request) {
         String endpointText = request.get("Endpoint").asText();
         Endpoint endpoint = new Endpoint(endpointText, true);
-        if(disabledEndpoints!=null){
-            return disabledEndpoints.contains(endpoint);
+        if (disabledEndpoints != null) {
+            boolean shouldSkip = disabledEndpoints.contains(endpoint);
+            if (shouldSkip) {
+                logger.info("Request Скипаем: " + endpointText); // Логирование пропуска по причине отключенного эндпоинта
+            }
+            return shouldSkip;
         }
         return false;
     }
@@ -116,11 +127,12 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
             // Дополняем объект дополнительными полями
             sensitiveData.setDetectedFields(detectedFields);
             sensitiveData.setDetectedAt(LocalDateTime.now());
+            logger.info("ЧД данные сохранены: " + sensitiveData); // Логирование сохранения данных
 
             // Сохраняем в БД
             sensitiveDataRepository.save(sensitiveData);
         } catch (IOException e) {
-            // Обработка ошибок десериализации
+            logger.severe("Ошибка сохранения ЧД: " + e.getMessage()); // Логирование ошибок сохранения
             e.printStackTrace();
         }
     }
