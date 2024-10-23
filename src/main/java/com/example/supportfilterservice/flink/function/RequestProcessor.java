@@ -36,6 +36,11 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
 
     @Override
     public JsonNode map(String value) throws Exception {
+        System.out.println("=====================================================================================");
+        System.out.println("=====================================================================================");
+        System.out.println("=====================================================================================");
+        System.out.println("=====================================================================================");
+        System.out.println("=====================================================================================");
         logger.info("Пришло value: " + value); // Логирование входящего запроса
 
         JsonNode requestArray = objectMapper.readTree(value);
@@ -52,11 +57,15 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
             boolean isRemoved = processRequest(request, detectedFields);
 
             if (!detectedFields.isEmpty()) {
+                logger.info("Сохраняем ЧД в бд: " + copyRequest); // Логирование входящего запроса
+
                 saveSensitiveData(copyRequest, detectedFields);
             }
 
             // Если объект был удалён, сохраняем его в БД
             if (!isRemoved) {
+                logger.info("Добавляем для отправления в КАФКУ : " + request); // Логирование входящего запроса
+
                 processedRequests.add(request);
             }
         }
@@ -97,6 +106,8 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
             logger.info("Поле удалено removed: " + regexConfig.getField()); // Логирование удаления поля
             removeField(request, regexConfig.getField());
         } else if (regexConfig.isModeActive(FilterMode.HIDE_DATA)) {
+            logger.info("Поле пряем ****: " + regexConfig.getField()); // Логирование удаления поля
+
             hideData(request, regexConfig.getField(), regexConfig.getPattern());
         }
 
