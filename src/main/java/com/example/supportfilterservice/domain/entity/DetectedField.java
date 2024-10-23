@@ -1,7 +1,6 @@
 package com.example.supportfilterservice.domain.entity;
 
 import com.example.supportfilterservice.domain.DTO.FilterMode;
-import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -12,7 +11,6 @@ import lombok.ToString;
 
 @NoArgsConstructor
 @Entity
-@Embeddable
 @Data
 @AllArgsConstructor
 @ToString
