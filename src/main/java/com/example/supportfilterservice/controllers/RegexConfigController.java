@@ -2,6 +2,7 @@ package com.example.supportfilterservice.controllers;
 
 import com.example.supportfilterservice.domain.DTO.RegexConfig;
 import com.example.supportfilterservice.service.RegexConfigService;
+import com.example.supportfilterservice.service.TestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,8 +15,9 @@ public class RegexConfigController {
 
     private final RegexConfigService regexConfigService;
 
-    public RegexConfigController(RegexConfigService regexConfigService) {
+    public RegexConfigController(RegexConfigService regexConfigService, TestService testService) {
         this.regexConfigService = regexConfigService;
+        this.testService = testService;
     }
 
     // Получить все RegexConfig
@@ -63,4 +65,15 @@ public class RegexConfigController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+    private final TestService testService;
+    @PostMapping("/test")
+    public ResponseEntity<String> processTestRequest(@RequestBody String value) {
+        try {
+            String result = testService.test(value);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing request: " + e.getMessage());
+        }
+    }
+
 }
