@@ -31,7 +31,7 @@ public class SupportMessage {
 
     private String supportLevel;
 
-    private Instant timestamp; // Используем Instant для соответствия
+    private Long timestamp; // Используем Instant для соответствия
 
     @Column(name = "user_id")
     private String userId; // Убедитесь, что тип соответствует вашим данным

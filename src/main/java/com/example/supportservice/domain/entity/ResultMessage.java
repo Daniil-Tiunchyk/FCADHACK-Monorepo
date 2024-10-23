@@ -40,7 +40,7 @@ public class ResultMessage {
     private String supportLevel;
 
     @JsonProperty("Timestamp")
-    private Instant timestamp;
+    private Long timestamp;
 
     @JsonProperty("UserID")
     @Column(name = "user_id")
