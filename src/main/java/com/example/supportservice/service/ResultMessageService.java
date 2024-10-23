@@ -32,9 +32,9 @@ public class ResultMessageService {
         return repository.findById(id).orElse(null);
     }
 
-    public Page<ResultMessage> getMessages(SupportMessageFilter filter, Pageable pageable) {
+    public List<ResultMessage> getMessages() {
 
-        return repository.findAll(SupportMessageSpecification.getSpecificationResult(filter), pageable);
+        return repository.findAll();
     }
 
     @KafkaListener(topics = "filtered-support-requests", groupId = "support-filter-group")

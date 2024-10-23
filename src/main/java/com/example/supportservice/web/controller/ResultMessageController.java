@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/result-messages")
@@ -27,28 +28,7 @@ public class ResultMessageController {
     }
 
     @GetMapping
-    public Page<ResultMessage> getMessages(
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime timestampFrom,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime timestampTo,
-            @RequestParam(required = false) String userId,
-            @RequestParam(required = false) String supportLevel,
-            @RequestParam(required = false) String messageContent,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) String endpoint,
-            @RequestParam(required = false) String login,
-            Pageable pageable
-    ) {
-        SupportMessageFilter filter = SupportMessageFilter.builder()
-                .timestampFrom(timestampFrom)
-                .timestampTo(timestampTo)
-                .userId(userId)
-                .supportLevel(supportLevel)
-                .messageContent(messageContent)
-                .email(email)
-                .endpoint(endpoint)
-                .login(login)
-                .build();
-
-        return service.getMessages(filter, pageable);
+    public List<ResultMessage> getMessages() {
+        return service.getMessages();
     }
 }

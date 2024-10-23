@@ -9,8 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
-public class SupportMessageServiceImpl implements SupportMessageService {
+public class SupportMessageServiceImpl {
 
     private final SupportMessageRepository repository;
 
@@ -18,20 +20,16 @@ public class SupportMessageServiceImpl implements SupportMessageService {
         this.repository = repository;
     }
 
-    @Override
     public void saveMessage(SupportMessage message) {
         repository.save(message);
     }
 
-    @Override
     public SupportMessage getMessageById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("SupportMessage not found with id " + id));
     }
 
-    @Override
-    public Page<SupportMessage> getMessages(SupportMessageFilter filter, Pageable pageable) {
-        return repository.findAll(SupportMessageSpecification.getSpecification(filter), pageable);
+    public List<SupportMessage> getMessages() {
+        return repository.findAll();
     }
-
 }
