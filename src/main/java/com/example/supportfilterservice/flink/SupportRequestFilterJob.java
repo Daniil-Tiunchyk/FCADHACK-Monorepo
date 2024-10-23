@@ -6,41 +6,40 @@ import com.example.supportfilterservice.domain.repository.SensitiveDataRepositor
 import com.example.supportfilterservice.flink.function.RequestProcessor;
 import com.example.supportfilterservice.service.EndpointService;
 import com.example.supportfilterservice.service.RegexConfigService;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.annotation.PostConstruct;
-import org.apache.flink.api.common.serialization.SimpleStringSchema;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.connectors.kafka.*;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Properties;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class SupportRequestFilterJob {
-    private final StreamExecutionEnvironment env;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+
+    private final ObjectMapper objectMapper;
     private final RegexConfigService regexConfigService;
     private final EndpointService endpointService;
-    private final RedisConnectionFactory jedisConnectionFactory;
     private final RedisMessageListenerContainer container; // Используем бин
     private final SensitiveDataRepository sensitiveDataRepository;
     private final AtomicReference<List<RegexConfig>> regexConfigs = new AtomicReference<>(new ArrayList<>());
     private final AtomicReference<List<Endpoint>> disabledEndpoints = new AtomicReference<>(new ArrayList<>());
 
-    public SupportRequestFilterJob(StreamExecutionEnvironment env, RegexConfigService regexConfigService,
-                                   EndpointService endpointService, RedisConnectionFactory jedisConnectionFactory,
-                                   RedisMessageListenerContainer container, SensitiveDataRepository sensitiveDataRepository
+    public SupportRequestFilterJob(RegexConfigService regexConfigService,
+                                   EndpointService endpointService,
+                                   KafkaTemplate<String, String> kafkaTemplate, ObjectMapper objectMapper, RedisMessageListenerContainer container, SensitiveDataRepository sensitiveDataRepository
                                    )  {
-        this.env = env;
+        this.kafkaTemplate = kafkaTemplate;
+
         this.regexConfigService = regexConfigService;
         this.endpointService = endpointService;
-        this.jedisConnectionFactory = jedisConnectionFactory;
+        this.objectMapper = objectMapper;
+
         this.container = container;
         this.sensitiveDataRepository = sensitiveDataRepository;
         loadInitialConfigs();
@@ -48,27 +47,22 @@ public class SupportRequestFilterJob {
     }
 
 
-    public void execute() throws Exception {
-        Properties kafkaProps = new Properties();
-        kafkaProps.setProperty("bootstrap.servers", "localhost:9092");
-        kafkaProps.setProperty("group.id", "support-filter-group");
 
-        FlinkKafkaConsumer<String> consumer = new FlinkKafkaConsumer<>(
-                "support-requests",
-                new SimpleStringSchema(),
-                kafkaProps);
+    @KafkaListener(topics = "support-requests", groupId = "support-filter-group")
+    public void processRequest(String value) {
+        RequestProcessor requestProcessor = new RequestProcessor(disabledEndpoints.get(), regexConfigs.get(), sensitiveDataRepository, objectMapper);
 
-        FlinkKafkaProducer<String> producer = new FlinkKafkaProducer<>(
-                "filtered-support-requests",
-                new SimpleStringSchema(),
-                kafkaProps);
-        ObjectMapper objectMapper = new ObjectMapper();
-        env.addSource(consumer)
-                .map(new RequestProcessor(disabledEndpoints.get(), regexConfigs.get(), sensitiveDataRepository, objectMapper))
-                .filter(Objects::nonNull)
-                .map(objectMapper::writeValueAsString)
-                .addSink(producer);
-        env.execute("Support Request Filter Job");
+        try {
+            JsonNode resultNode = requestProcessor.map(value);
+            String resultString = objectMapper.writeValueAsString(resultNode);
+
+            kafkaTemplate.send("filtered-support-requests", resultString);
+            // Отправка результата в Kafka
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Логирование ошибки или обработка исключения
+        }
     }
     private void loadInitialConfigs() {
         regexConfigs.set(regexConfigService.getSortedRegexConfigs());
