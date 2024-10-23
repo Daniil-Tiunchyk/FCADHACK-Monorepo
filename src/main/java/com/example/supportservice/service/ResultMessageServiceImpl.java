@@ -2,6 +2,7 @@ package com.example.supportservice.service;
 
 import com.example.supportservice.domain.entity.ResultMessage;
 import com.example.supportservice.domain.repository.ResultMessageRepository;
+import com.example.supportservice.exception.ResourceNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +31,7 @@ public class ResultMessageServiceImpl implements ResultMessageService {
     @Override
     public ResultMessage getMessageById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("ResultMessage not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("ResultMessage not found with id " + id));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.supportservice.service;
 
 import com.example.supportservice.domain.entity.SupportMessage;
+import com.example.supportservice.exception.ResourceNotFoundException;
 import com.example.supportservice.domain.repository.SupportMessageRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class SupportMessageServiceImpl implements SupportMessageService {
     @Override
     public SupportMessage getMessageById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("SupportMessage not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("SupportMessage not found with id " + id));
     }
 
     @Override
