@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ResultMessageRepository  extends JpaRepository<ResultMessage, Long>, JpaSpecificationExecutor<ResultMessage> {
+public interface ResultMessageRepository extends JpaRepository<ResultMessage, Long>, JpaSpecificationExecutor<ResultMessage> {
 }

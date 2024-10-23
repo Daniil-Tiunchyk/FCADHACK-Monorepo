@@ -3,7 +3,6 @@ package com.example.supportservice.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,25 +35,25 @@ public class SupportMessage {
     @Column(name = "user_id")
     private String userId; // Убедитесь, что тип соответствует вашим данным
 
-    @Column(name = "phone_number", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    @Column(name = "phone_number", columnDefinition = "TEXT")  // Убираем ограничение на длину
     private String phoneNumber;
 
-    @Column(name = "first_name", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    @Column(name = "first_name", columnDefinition = "TEXT")  // Убираем ограничение на длину
     private String firstName;
 
-    @Column(name = "last_name", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    @Column(name = "last_name", columnDefinition = "TEXT")  // Убираем ограничение на длину
     private String lastName;
 
-    @Column(name = "middle_name", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    @Column(name = "middle_name", columnDefinition = "TEXT")  // Убираем ограничение на длину
     private String middleName;
 
-    @Column(name = "gender", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    @Column(name = "gender", columnDefinition = "TEXT")  // Убираем ограничение на длину
     private String gender;
 
-    @Column(name = "age", nullable = true)
+    @Column(name = "age")
     private Integer age;
 
-    @Column(name = "birth_date", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    @Column(name = "birth_date", columnDefinition = "TEXT")  // Убираем ограничение на длину
     private String birthDate;
 
     @ElementCollection

@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
-
 @Entity
 @Table(name = "result_messages")
 @Getter
@@ -47,30 +45,30 @@ public class ResultMessage {
     private Long userId;
 
     @JsonProperty("Номер телефона")
-    @Column(name = "phone_number", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    @Column(name = "phone_number", columnDefinition = "TEXT")  // Убираем ограничение на длину
     private String phoneNumber;
 
     @JsonProperty("Имя")
-    @Column(name = "first_name", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    @Column(name = "first_name", columnDefinition = "TEXT")  // Убираем ограничение на длину
     private String firstName;
 
     @JsonProperty("Фамилия")
-    @Column(name = "last_name", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    @Column(name = "last_name", columnDefinition = "TEXT")  // Убираем ограничение на длину
     private String lastName;
 
     @JsonProperty("Отчество")
-    @Column(name = "middle_name", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    @Column(name = "middle_name", columnDefinition = "TEXT")  // Убираем ограничение на длину
     private String middleName;
 
     @JsonProperty("Пол")
-    @Column(name = "gender", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    @Column(name = "gender", columnDefinition = "TEXT")  // Убираем ограничение на длину
     private String gender;
 
     @JsonProperty("Возраст")
-    @Column(name = "age", nullable = true)
+    @Column(name = "age")
     private Integer age;
 
     @JsonProperty("Дата рождения")
-    @Column(name = "birth_date", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
+    @Column(name = "birth_date", columnDefinition = "TEXT")  // Убираем ограничение на длину
     private String birthDate;
 }

@@ -1,21 +1,14 @@
 package com.example.supportservice.web.controller;
 
-
 import com.example.supportservice.domain.entity.ResultMessage;
 import com.example.supportservice.service.ResultMessageService;
-import com.example.supportservice.web.dto.SupportMessageFilter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/result-messages")
 public class ResultMessageController {
-
     private final ResultMessageService service;
 
     public ResultMessageController(ResultMessageService service) {
@@ -28,7 +21,13 @@ public class ResultMessageController {
     }
 
     @GetMapping
-    public List<ResultMessage> getMessages() {
-        return service.getMessages();
+    public List<ResultMessage> getMessages(@RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "10") int size) {
+        return service.getMessages(page, size);
+    }
+
+    @PostMapping
+    public void saveMessage(@RequestBody ResultMessage message) {
+        service.saveMessage(message);
     }
 }

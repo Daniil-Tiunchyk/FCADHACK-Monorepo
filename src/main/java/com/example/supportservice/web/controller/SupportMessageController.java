@@ -2,23 +2,16 @@ package com.example.supportservice.web.controller;
 
 import com.example.supportservice.domain.entity.SupportMessage;
 import com.example.supportservice.service.SupportMessageService;
-import com.example.supportservice.service.SupportMessageServiceImpl;
-import com.example.supportservice.web.dto.SupportMessageFilter;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/support-messages")
 public class SupportMessageController {
+    private final SupportMessageService service;
 
-    private final SupportMessageServiceImpl service;
-
-    public SupportMessageController(SupportMessageServiceImpl service) {
+    public SupportMessageController(SupportMessageService service) {
         this.service = service;
     }
 
@@ -28,7 +21,13 @@ public class SupportMessageController {
     }
 
     @GetMapping
-    public List<SupportMessage> getMessages() {
-        return service.getMessages();
+    public List<SupportMessage> getMessages(@RequestParam(defaultValue = "0") int page,
+                                            @RequestParam(defaultValue = "10") int size) {
+        return service.getMessages(page, size);
+    }
+
+    @PostMapping
+    public void saveMessage(@RequestBody SupportMessage message) {
+        service.saveMessage(message);
     }
 }
