@@ -75,8 +75,7 @@ public class SensitiveData {
     @Column(name = "birth_date", columnDefinition = "TEXT", nullable = true)  // Убираем ограничение на длину
     private String birthDate;
 
-    @ElementCollection
-    @CollectionTable(name = "detected_fields", joinColumns = @JoinColumn(name = "sensitive_data_id"))
+    @OneToMany(cascade = CascadeType.ALL)
     private List<DetectedField> detectedFields;
 
     private LocalDateTime detectedAt;
