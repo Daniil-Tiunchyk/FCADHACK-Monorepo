@@ -36,8 +36,11 @@ public class EndpointController {
     }
 
     // Обновить существующий endpoint
-    @PutMapping("/{endpointName}")
-    public ResponseEntity<String> updateEndpoint(@PathVariable String endpointName, @RequestBody Endpoint endpoint) {
+    // Обновить существующий endpoint без передачи в URL
+    @PutMapping
+    public ResponseEntity<String> updateEndpoint(
+            @RequestParam String endpointName,
+            @RequestBody Endpoint endpoint) {
         try {
             endpointService.updateEndpoint(endpointName, endpoint.isEnabled());
             return ResponseEntity.ok("Endpoint updated successfully.");
@@ -46,9 +49,9 @@ public class EndpointController {
         }
     }
 
-    // Удалить endpoint
-    @DeleteMapping("/{endpointName}")
-    public ResponseEntity<String> deleteEndpoint(@PathVariable String endpointName) {
+    // Удалить endpoint без передачи в URL
+    @DeleteMapping
+    public ResponseEntity<String> deleteEndpoint(@RequestParam String endpointName) {
         try {
             endpointService.deleteEndpoint(endpointName);
             return ResponseEntity.ok("Endpoint deleted successfully.");

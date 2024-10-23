@@ -38,10 +38,10 @@ public class RegexConfigController {
     }
 
     // Обновить существующий RegexConfig
-    @PutMapping("/{field}/{pattern}")
+    @PutMapping
     public ResponseEntity<String> updateRegexConfig(
-            @PathVariable String field,
-            @PathVariable String pattern,
+            @RequestParam String field,
+            @RequestParam String pattern,
             @RequestBody RegexConfig updatedConfig) {
         try {
             regexConfigService.updateRegexConfig(field, pattern, updatedConfig);
@@ -52,10 +52,10 @@ public class RegexConfigController {
     }
 
     // Удалить RegexConfig
-    @DeleteMapping("/{field}/{pattern}")
+    @DeleteMapping
     public ResponseEntity<String> deleteRegexConfig(
-            @PathVariable String field,
-            @PathVariable String pattern) {
+            @RequestParam String field,
+            @RequestParam String pattern) {
         try {
             regexConfigService.deleteRegexConfig(field, pattern);
             return ResponseEntity.ok("RegexConfig deleted successfully.");
