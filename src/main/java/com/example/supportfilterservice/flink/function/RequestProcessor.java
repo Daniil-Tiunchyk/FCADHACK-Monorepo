@@ -42,13 +42,13 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
             if (shouldSkipRequest(request)) {
                 continue;
             }
-
+            JsonNode copyRequest = request.deepCopy();
             // Обработка запроса и получение списка обнаруженных полей
             List<DetectedField> detectedFields = new ArrayList<>();
             boolean isRemoved = processRequest(request, detectedFields);
 
             if (!detectedFields.isEmpty()) {
-                saveSensitiveData(request, detectedFields);
+                saveSensitiveData(copyRequest, detectedFields);
             }
 
             // Если объект был удалён, сохраняем его в БД
@@ -64,19 +64,22 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
     private boolean processRequest(JsonNode request, List<DetectedField> detectedFields) {
         boolean shouldRemove = false; // Флаг для удаления запроса
 
-        for (RegexConfig regexConfig : regexConfigs) {
-            if (!regexConfig.isEnabled()) {
-                continue;
-            }
-            if(shouldRemove){
-                break;
-            }
-            String fieldValue = getFieldValue(request, regexConfig.getField());
-            if (fieldValue != null && Pattern.matches(regexConfig.getPattern(), fieldValue)) {
-                // Обработка чувствительных данных
-                shouldRemove = handleSensitiveData(request, regexConfig, detectedFields) || shouldRemove;
+        if(regexConfigs!=null){
+            for (RegexConfig regexConfig : regexConfigs) {
+                if (!regexConfig.isEnabled()) {
+                    continue;
+                }
+                if(shouldRemove){
+                    break;
+                }
+                String fieldValue = getFieldValue(request, regexConfig.getField());
+                if (fieldValue != null && Pattern.matches(regexConfig.getPattern(), fieldValue)) {
+                    // Обработка чувствительных данных
+                    shouldRemove = handleSensitiveData(request, regexConfig, detectedFields) || shouldRemove;
+                }
             }
         }
+
         return shouldRemove; // Возвращаем, нужно ли удалять объект
     }
 
@@ -99,7 +102,10 @@ public class RequestProcessor implements MapFunction<String, JsonNode> {
     private boolean shouldSkipRequest(JsonNode request) {
         String endpointText = request.get("Endpoint").asText();
         Endpoint endpoint = new Endpoint(endpointText, true);
-        return disabledEndpoints.contains(endpoint);
+        if(disabledEndpoints!=null){
+            return disabledEndpoints.contains(endpoint);
+        }
+        return false;
     }
 
     private void saveSensitiveData(JsonNode request, List<DetectedField> detectedFields) {
