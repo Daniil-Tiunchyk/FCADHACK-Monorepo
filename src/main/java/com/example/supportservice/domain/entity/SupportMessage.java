@@ -57,6 +57,7 @@ public class SupportMessage {
     private String birthDate;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "sensitive_data_id")
     private List<DetectedField> detectedFields;
 
     private LocalDateTime detectedAt;
