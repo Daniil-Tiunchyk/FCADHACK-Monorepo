@@ -16,10 +16,6 @@
     gap: 1rem;
 }
 
-.conFilter_url {
-    color: var(--firstcolor);
-}
-
 .confFilter_inner .Input_block {
     max-width: 600px;
 }

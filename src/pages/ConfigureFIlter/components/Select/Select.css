@@ -31,6 +31,8 @@
     padding: 10px 20px;
     max-width: 250px;
     width: 100%;
+    max-height: 200px;
+    overflow: auto;
 }
 
 .option-select {

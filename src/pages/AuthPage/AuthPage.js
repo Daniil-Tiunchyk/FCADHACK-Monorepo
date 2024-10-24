@@ -3,7 +3,7 @@ import './AuthPage.css'
 import AuthInput from './components/AuthInput/AuthInput'
 import Button from '../../components/Button/Button.jsx'
 import axios from 'axios'
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const AuthPage = () => {
   const [login, setLogin] = useState("");
@@ -24,7 +24,9 @@ const onAuth = () => {
       <div className="auth_wrapper">
         <div className="sideBar_block">
           <div className="sideBar_inner">
-            <h1 className="auth_logo">FCADHACK</h1>
+            <Link to="/">
+              <h1 className="auth_logo">FCADHACK</h1>
+            </Link>
             <div className="authform_block">
               <h1>
                 Добро пожаловать обратно! Пожалуйста, войдите в<br /> свой
@@ -37,7 +39,12 @@ const onAuth = () => {
                   type="text"
                   placeholder={"Логин"}
                 />
-                <AuthInput onChange={(e) => setPassword(e.target.value)} required type="password" placeholder={"Пароль"} />
+                <AuthInput
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  type="password"
+                  placeholder={"Пароль"}
+                />
                 <div className="form_warn-block">
                   <div className="form_save-block">
                     <input

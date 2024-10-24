@@ -72,7 +72,6 @@ const Table = ({ data, headerData, fetchURL = "" }) => {
 
   const onChangeUrlCheckbox = (e, el) => {
     const newItem = { endpoint: el.endpoint, enabled: e.target.checked };
-    console.log(newItem);
     axios
       .put(fetchURL + "?endpointName=" + el.endpoint, newItem)
       .then((response) => {
@@ -83,8 +82,26 @@ const Table = ({ data, headerData, fetchURL = "" }) => {
       });
   }
 
-  const onChangeFieldCheckbox = () => {
-    
+  const onChangeFieldCheckbox = (e,el, mode) => {
+    const newModes = el.modes;
+    const indexOfMode = newModes.findIndex((element) => element.includes(mode));
+    indexOfMode >= 0 ? newModes.splice(indexOfMode, 1) : newModes.push(mode);
+     const newItem = {
+       enabled: el.enabled,
+       field: el.field,
+       modes: newModes,
+       pattern: el.pattern,
+     };
+     const updatedPattern = encodeURIComponent(el.pattern)
+     const newFetchUrl = `${fetchURL}?field=${el.field}&pattern=${updatedPattern}`;
+     axios
+       .put(newFetchUrl, newItem)
+       .then((response) => {
+         console.log(response);
+       })
+       .catch((error) => {
+         console.log(error);
+       });
   }
   return (
     <>
@@ -209,6 +226,7 @@ const Table = ({ data, headerData, fetchURL = "" }) => {
                                 element.includes("HIDE_DATA")
                               ) >= 0 && true
                             }
+                            onChange={(e) => onChangeFieldCheckbox(e, el, "HIDE_DATA")}
                           />
                           <label htmlFor={`checkboxMasking${el.id}`}></label>
                         </div>
@@ -221,9 +239,10 @@ const Table = ({ data, headerData, fetchURL = "" }) => {
                             id={`checkboxFilter${el.id}`}
                             defaultChecked={
                               el.modes.findIndex((element) =>
-                                element.includes("REMOVE_OBJECT")
+                                element.includes("REMOVE_FIELD")
                               ) >= 0 && true
                             }
+                            onChange={(e) => onChangeFieldCheckbox(e, el, "REMOVE_FIELD")}
                           />
                           <label htmlFor={`checkboxFilter${el.id}`}></label>
                         </div>
@@ -236,9 +255,10 @@ const Table = ({ data, headerData, fetchURL = "" }) => {
                             id={`checkboxCP${el.id}`}
                             defaultChecked={
                               el.modes.findIndex((element) =>
-                                element.includes("REMOVE_FIELD")
+                                element.includes("REMOVE_OBJECT")
                               ) >= 0 && true
                             }
+                            onChange={(e) => onChangeFieldCheckbox(e, el, "REMOVE_OBJECT")}
                           />
                           <label htmlFor={`checkboxCP${el.id}`}></label>
                         </div>

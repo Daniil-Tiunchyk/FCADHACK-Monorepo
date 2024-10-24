@@ -3,9 +3,15 @@ import Button from '../../../../components/Button/Button';
 
 import './ConfFilter.css';
 import Select from '../Select/Select';
+import axios from 'axios';
 
 
-const ConfFIlter = ({items, setResults, data}) => {
+
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
+
+const ConfFIlter = ({items, setResults, data, fetchURL, fetchData}) => {
   const [inputValue, setInputValue] = useState(""); // Храним выбранное значение
 
   const [selectedValueToAdd, setSelectedValueToAdd] = useState(""); // Храним выбранное значение
@@ -14,36 +20,38 @@ const ConfFIlter = ({items, setResults, data}) => {
 
 
   const onClickApply = () => {
-    console.log(selectedValue);
     if (selectedValue !== "Выбрать") {
       let filteredResults = data.filter(
-        (item) =>  item?.name?.toLowerCase().indexOf(selectedValue?.toLowerCase()) >= 0
+        (item) =>  item?.field?.toLowerCase().indexOf(selectedValue?.toLowerCase()) >= 0
       );
       setResults(filteredResults);
+    } else {
+      setResults(data)
     }
   };
 
   const onClickAdd = () => {
-    setResults((prev) => [
-      ...prev,
-      {
-        name: selectedValueToAdd,
-        value: inputValue,
-        masking: false,
-        filter: false,
-        removingCP: false,
-        id: prev[prev.length - 1].id + 1,
-      }
-    ]);
+     axios
+       .post(fetchURL, {
+         field: selectedValueToAdd,
+         enabled: true,
+         modes: [],
+         pattern: inputValue,
+       })
+       .then((response) => {
+         console.log(response);
+         fetchData()
+         toast.success("Добавлено!");
+       })
+       .catch((error) => {
+         console.log(error);
+       });
+   
   }
 
   return (
     <div className="confFilter_block">
       <div className="confFilter_inner">
-        <h3>
-          Х инстансов, Q инстансов Z,{" "}
-          <span className="conFilter_url">+ тут должна быть ссылка</span>
-        </h3>
         <div className="confFilters">
           <Select
             value={selectedValueToAdd}
@@ -70,6 +78,7 @@ const ConfFIlter = ({items, setResults, data}) => {
           <Button onClick={onClickApply}>Применить</Button>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }
