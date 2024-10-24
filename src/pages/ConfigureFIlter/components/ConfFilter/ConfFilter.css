@@ -1,0 +1,31 @@
+.confFilter_block {
+    margin: 3rem 0 1rem 0;
+}
+.confFilters {
+    display: flex;
+    align-items: center;
+    max-width: 1200px;
+    width: 100%;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.confFilter_inner {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.conFilter_url {
+    color: var(--firstcolor);
+}
+
+.confFilter_inner .Input_block {
+    max-width: 600px;
+}
+
+.confFiltersArea {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}

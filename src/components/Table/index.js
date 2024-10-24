@@ -4,6 +4,7 @@ import styles from "./Table.module.css";
 
 import TableFooter from "./TableFooter";
 import TableItemModal from "./TableItemModal/TableItemModal";
+import Modal from "../Modal/Modal";
 
 
 const Table = ({ data, headerData }) => {
@@ -23,6 +24,12 @@ const Table = ({ data, headerData }) => {
   const [currentItems, setCurrentItems] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
+  
+  const [isOpenModalUrl, setIsOpenModalUrl] = useState(0);
+
+
+  /*  */
+
 
   const itemsPerPage = 5; // Количество элементов на страницу
 
@@ -32,7 +39,6 @@ const Table = ({ data, headerData }) => {
     data[0]?.userID
       ? setCurrentItems(data.slice(itemOffset, endOffset))
       : setCurrentItems(data)
-    
     setPageCount(Math.ceil(data.length / itemsPerPage));
   }, [itemOffset, itemsPerPage, data]);
 
@@ -64,15 +70,13 @@ const Table = ({ data, headerData }) => {
     setCurrentItems(arr);
   }
 
-
-  
   return (
     <>
       <div className="table_block">
         <table className={styles.table}>
           <thead
             className={`${styles.tableRowHeader} ${
-              data[0]?.userID ? "" : styles.blockUrlTable
+              data[0]?.url ? styles.blockUrlTable : ""
             }`}
           >
             <tr>
@@ -109,67 +113,111 @@ const Table = ({ data, headerData }) => {
                     </tr>
                   ))
                 : currentItems.map((el, i) => (
+                    <>
+                      {isOpenModalUrl === el.id && (
+                        <Modal
+                          item={el}
+                          onDelete={onClickDelete}
+                          openModal={setIsOpenModalUrl}
+                          title={"УДАЛЕНИЕ URL"}
+                          message={
+                            "Вы уверены что хотите удалить выбранный URL?"
+                          }
+                          urlName={el.url}
+                        />
+                      )}
+
+                      <tr
+                        className={`${styles.tableRowItems} ${styles.blockUrlRowItems}`}
+                        key={el.id}
+                      >
+                        {/* ПОМЕНЯТЬ НА userID */}
+                        <td className={styles.tableCell}>{el?.url}</td>
+                        <td className={styles.tableCell}>
+                          {el?.name}
+                          <input
+                            type="checkbox"
+                            className={`checkbox ${styles.checkboxUrlTable}`}
+                            id={`checkbox${el.id}`}
+                            defaultChecked={el.filter ? true : ""}
+                          />
+                          <label htmlFor={`checkbox${el.id}`}></label>
+                        </td>
+                        <td
+                          className={`${styles.tableCell} ${styles.urlDelete}`}
+                        >
+                          <img
+                            onClick={() => setIsOpenModalUrl(el.id)}
+                            src="./closeBtn.svg"
+                            alt="close"
+                          />
+                        </td>
+                      </tr>
+                    </>
+                  ))
+              : currentItems.map((el, i) => (
+                  <>
+                    {isOpenModalUrl === el.id && (
+                      <Modal
+                        item={el}
+                        onDelete={onClickDelete}
+                        openModal={setIsOpenModalUrl}
+                        title={"УДАЛЕНИЕ ПОЛЯ"}
+                        message={
+                          "Вы уверены что хотите удалить выбранное поле?"
+                        }
+                        name={el.name}
+                      />
+                    )}
                     <tr
-                      className={`${styles.tableRowItems} ${styles.blockUrlRowItems}`}
+                      className={`${styles.tableRowItems} ${styles.confTable}`}
                       key={el.id}
                     >
                       {/* ПОМЕНЯТЬ НА userID */}
-                      <td className={styles.tableCell}>{el?.url}</td>
+                      <td className={styles.tableCell}>{el?.name}</td>
+                      <td className={styles.tableCell}>{el?.value}</td>
                       <td className={styles.tableCell}>
-                        {el?.name}
-                        <input
-                          type="checkbox"
-                          className={`checkbox ${styles.checkboxUrlTable}`}
-                          id={`checkbox${i}`}
-                          defaultChecked={el.filter ? true : ""}
-                        />
-                        <label htmlFor={`checkbox${i}`}></label>
+                        <div>
+                          <input
+                            type="checkbox"
+                            className={`checkbox ${styles.checkboxUrlTable}`}
+                            id={`checkboxMasking${el.id}`}
+                            defaultChecked={el.masking && true}
+                          />
+                          <label htmlFor={`checkboxMasking${el.id}`}></label>
+                        </div>
+                      </td>
+                      <td className={styles.tableCell}>
+                        <div>
+                          <input
+                            type="checkbox"
+                            className={`checkbox ${styles.checkboxUrlTable}`}
+                            id={`checkboxFilter${el.id}`}
+                            defaultChecked={el.filter && true}
+                          />
+                          <label htmlFor={`checkboxFilter${el.id}`}></label>
+                        </div>
+                      </td>
+                      <td className={styles.tableCell}>
+                        <div>
+                          <input
+                            type="checkbox"
+                            className={`checkbox ${styles.checkboxUrlTable}`}
+                            id={`checkboxCP${el.id}`}
+                            defaultChecked={el.cp && true}
+                          />
+                          <label htmlFor={`checkboxCP${el.id}`}></label>
+                        </div>
                       </td>
                       <td className={`${styles.tableCell} ${styles.urlDelete}`}>
-                        <img onClick={() => onClickDelete(el.id)} src="./closeBtn.svg" alt="close" />
+                        <img
+                          onClick={() => setIsOpenModalUrl(el.id)}
+                          src="./closeBtn.svg"
+                          alt="close"
+                        />
                       </td>
                     </tr>
-                  ))
-              : currentItems.map((el, i) => (
-                  <tr className={`${styles.tableRowItems}`} key={el.id}>
-                    {/* ПОМЕНЯТЬ НА userID */}
-                    <td className={styles.tableCell}>{el?.name}</td>
-                    <td className={styles.tableCell}>{el?.value}</td>
-                    <td className={styles.tableCell}>
-                      <input
-                        type="checkbox"
-                        className={`checkbox ${styles.checkboxUrlTable}`}
-                        id={`checkboxmask${el.id}`}
-                        defaultChecked={el.masking ? "true" : ""}
-                      />
-                      <label htmlFor={`checkboxmask${el.id}`}></label>
-                    </td>
-                    <td className={styles.tableCell}>
-                      <input
-                        type="checkbox"
-                        className={`checkbox ${styles.checkboxUrlTable}`}
-                        id={`checkbox${el.id}`}
-                        defaultChecked={el.filter ? "true" : ""}
-                      />
-                      <label htmlFor={`checkbox${el.id}`}></label>
-                    </td>
-                    <td className={styles.tableCell}>
-                      <input
-                        type="checkbox"
-                        className={`checkbox ${styles.checkboxUrlTable}`}
-                        id={`checkboxCP${el.id}`}
-                        defaultChecked={el.removingCP ? "true" : ""}
-                      />
-                      <label htmlFor={`checkboxCP${el.id}`}></label>
-                    </td>
-                    <td className={`${styles.tableCell} ${styles.urlDelete}`}>
-                      <img
-                        onClick={() => onClickDelete(el.id)}
-                        src="./closeBtn.svg"
-                        alt="close"
-                      />
-                    </td>
-                  </tr>
+                  </>
                 ))}
           </tbody>
         </table>

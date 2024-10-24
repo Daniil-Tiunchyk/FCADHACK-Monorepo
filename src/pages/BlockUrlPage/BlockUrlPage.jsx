@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import "./BlockUrlPage.css";
 import Header from '../../components/Header/Header';
 import Table from '../../components/Table';
+import Button from "../../components/Button/Button";
 
 const data = [
   {
     url: "http://localhost:3000",
     filter: false,
-    id: 1,
+    id: 1,  
   },
   {
     url: "http://localhost:3000",
@@ -48,12 +49,31 @@ const BlockUrlPage = () => {
       const [isOpenfilters, setOpenFilters] = useState(false);
       const [isOpenBurger, setIsOpenBurger] = useState(false);
 
+      const [newData, setNewData] = useState(data)
+      const [inputValue, setInputValue] = useState("");
+      
       useEffect(() => {
         return () => setIsLoading(false);
       }, []);
 
+      const onClickAdd = () => {
+        if (inputValue !== "") {
+          const newID = newData[newData.length - 1].id + 1;
+          setNewData((prev) => [
+            ...prev,
+            {
+              url: inputValue,
+              filter: false,
+              id: newID,
+            },
+          ]);
+        }
+        setInputValue("")
+      }
+
   return (
     <div className={"App"}>
+      
       <div className="container">
         <div className="wrapper">
           <Header
@@ -64,9 +84,19 @@ const BlockUrlPage = () => {
             isBlockedFilter={true}
           />
           <main>
-            {isLoading || <Table data={data} headerData={headerData}/>}
+            <div className="urlAdd_block">
+              <div className="Input_block">
+                <input
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  type={"text"}
+                  placeholder="URL"
+                />
+              </div>
+              <Button onClick={onClickAdd}>Добавить</Button>
+            </div>
+            {isLoading || <Table data={newData} headerData={headerData} />}
           </main>
-         
         </div>
       </div>
     </div>

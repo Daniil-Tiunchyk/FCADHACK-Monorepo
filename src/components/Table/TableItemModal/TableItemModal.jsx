@@ -28,7 +28,7 @@ const TableItemModal = ({ selectedItem, closeModal, formatDate }) => {
           src="./closeBtn.svg"
           alt="close"
         />
-        <div className="modal_inner">
+        <div className="Tablemodal_inner">
           <h1>Подробная информация </h1>
           <ul className="modal_list">
             <li>

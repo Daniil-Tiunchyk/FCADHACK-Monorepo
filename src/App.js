@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css"
 import Table from "./components/Table/index"
-import data from "./elements.json"
+import JSONdata from "./elements.json"
 import TableFilters from "./components/Table/TableFilters/TableFilters";
 import Header from "./components/Header/Header";
 
@@ -21,6 +21,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(true)
   const [isOpenfilters, setOpenFilters] = useState(false)
   const [isOpenBurger, setIsOpenBurger] = useState(false);
+
+  const [data,setData] = useState(JSONdata)
   
 
   useEffect(() => {
@@ -31,15 +33,20 @@ function App() {
     <div className={"App"}>
       <div className="container">
         <div className="wrapper">
-            <Header setOpenFilters={setOpenFilters} isOpenfilters={isOpenfilters} isOpenBurger={isOpenBurger} setIsOpenBurger={setIsOpenBurger} />
-            <main>
-              {isOpenfilters && (
-                  <TableFilters />
-              ) }
-              {isLoading || <Table headerData={headerData} data={data}/>}
-            </main>
+          <Header
+            setOpenFilters={setOpenFilters}
+            isOpenfilters={isOpenfilters}
+            isOpenBurger={isOpenBurger}
+            setIsOpenBurger={setIsOpenBurger}
+          />
+          <main>
+            {isOpenfilters && <TableFilters data={JSONdata}  setResults={setData} />}
+            {isLoading || <Table headerData={headerData} data={data} />}
+          </main>
           <footer>
-            <p className="ExplainingText">Выберите нужный лог и просмотрите подробную информацию о нем</p>
+            <p className="ExplainingText">
+              Выберите нужный лог и просмотрите подробную информацию о нем
+            </p>
           </footer>
         </div>
       </div>

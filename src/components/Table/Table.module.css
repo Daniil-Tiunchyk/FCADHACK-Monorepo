@@ -75,3 +75,18 @@ thead th {
 }
 
 /*  */
+
+
+
+/* - */
+.configureTableFooter td div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.confTable td div {
+    text-align: center;
+}
+
+/* - */

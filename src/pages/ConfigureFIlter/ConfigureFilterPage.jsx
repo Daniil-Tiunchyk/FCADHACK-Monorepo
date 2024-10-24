@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import "./ConfigureFilterPage.css";
 import Table from '../../components/Table';
 import Header from '../../components/Header/Header';
+import ConfFIlter from './components/ConfFilter/ConfFIlter';
 
 
 const data = [
@@ -50,7 +51,7 @@ const data = [
     value: "OLGA",
     masking: false,
     filter: true,
-    removingCP: false,
+    removingCP: true,
     id: 9,
   },
   {
@@ -58,7 +59,7 @@ const data = [
     value: "OLGA",
     masking: false,
     filter: true,
-    removingCP: false,
+    removingCP: true,
     id: 6,
   },
   {
@@ -87,10 +88,12 @@ const headerData = [
   "",
 ];
 
+const filterPerName = ["Имя", "Номер", "Телефон", "что-то", "что-то", "что-то"];
 const ConfigureFilterPage = () => {
      const [isLoading, setIsLoading] = useState(true);
      const [isOpenfilters, setOpenFilters] = useState(false);
      const [isOpenBurger, setIsOpenBurger] = useState(false);
+
 
      useEffect(() => {
        return () => setIsLoading(false);
@@ -108,6 +111,7 @@ const ConfigureFilterPage = () => {
             isBlockedFilter={true}
           />
           <main>
+            <ConfFIlter items={filterPerName}/>
             {isLoading || <Table headerData={headerData} data={data} />}
           </main>
         </div>

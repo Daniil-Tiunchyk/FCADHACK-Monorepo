@@ -25,7 +25,7 @@
     margin-bottom: 29px;
 }
 
-.modal_inner {
+.Tablemodal_inner {
     display: flex;
     flex-direction: column;
 }
