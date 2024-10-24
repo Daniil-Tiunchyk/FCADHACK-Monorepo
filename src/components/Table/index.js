@@ -5,6 +5,7 @@ import styles from "./Table.module.css";
 import TableFooter from "./TableFooter";
 import TableItemModal from "./TableItemModal/TableItemModal";
 import Modal from "../Modal/Modal";
+import axios from "axios";
 
 
 const Table = ({ data, headerData, fetchURL = "" }) => {
@@ -68,6 +69,23 @@ const Table = ({ data, headerData, fetchURL = "" }) => {
     setCurrentItems(arr);
   };
 
+
+  const onChangeUrlCheckbox = (e, el) => {
+    const newItem = { endpoint: el.endpoint, enabled: e.target.checked };
+    console.log(newItem);
+    axios
+      .put(fetchURL + "?endpointName=" + el.endpoint, newItem)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  const onChangeFieldCheckbox = () => {
+    
+  }
   return (
     <>
       <div className="table_block">
@@ -141,7 +159,8 @@ const Table = ({ data, headerData, fetchURL = "" }) => {
                             type="checkbox"
                             className={`checkbox ${styles.checkboxUrlTable}`}
                             id={`checkbox${el.id}`}
-                            defaultChecked={el.filter ? true : ""}
+                            defaultChecked={el.enabled ? true : ""}
+                            onChange={(e) => onChangeUrlCheckbox(e, el)}
                           />
                           <label htmlFor={`checkbox${el.id}`}></label>
                         </td>
