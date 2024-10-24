@@ -27,6 +27,9 @@ public class EndpointController {
     // Создать новый endpoint
     @PostMapping
     public ResponseEntity<String> createEndpoint(@RequestBody Endpoint endpoint) {
+        if (endpoint == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Endpoint must not be null.");
+        }
         try {
             endpointService.createEndpoint(endpoint);
             return ResponseEntity.status(HttpStatus.CREATED).body("Endpoint created successfully.");
@@ -41,6 +44,9 @@ public class EndpointController {
     public ResponseEntity<String> updateEndpoint(
             @RequestParam String endpointName,
             @RequestBody Endpoint endpoint) {
+        if (endpointName == null || endpoint == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Endpoint name and endpoint must not be null.");
+        }
         try {
             endpointService.updateEndpoint(endpointName, endpoint.isEnabled());
             return ResponseEntity.ok("Endpoint updated successfully.");
@@ -52,6 +58,9 @@ public class EndpointController {
     // Удалить endpoint без передачи в URL
     @DeleteMapping
     public ResponseEntity<String> deleteEndpoint(@RequestParam String endpointName) {
+        if (endpointName == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Endpoint name must not be null.");
+        }
         try {
             endpointService.deleteEndpoint(endpointName);
             return ResponseEntity.ok("Endpoint deleted successfully.");

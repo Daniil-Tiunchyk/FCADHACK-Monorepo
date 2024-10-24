@@ -4,14 +4,16 @@ import com.example.supportfilterservice.domain.DTO.Endpoint;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import java.util.List;
 import org.springframework.data.redis.listener.ChannelTopic;
+
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class EndpointService {
 
     private final RedisTemplate<String, List<Endpoint>> redisTemplate;
+
     @Qualifier("disabledEndpointsUpdatesTopic")
     private final ChannelTopic disabledEndpointsUpdatesTopic;
 
@@ -27,6 +29,10 @@ public class EndpointService {
     }
 
     public void createEndpoint(Endpoint endpoint) {
+        if (endpoint == null) {
+            throw new IllegalArgumentException("Endpoint must not be null.");
+        }
+
         List<Endpoint> endpoints = getAllEndpoints();
 
         if (endpoints.stream().anyMatch(e -> e.getEndpoint().equals(endpoint.getEndpoint()))) {
@@ -41,6 +47,10 @@ public class EndpointService {
     }
 
     public void updateEndpoint(String endpointName, boolean isEnabled) {
+        if (endpointName == null) {
+            throw new IllegalArgumentException("Endpoint name must not be null.");
+        }
+
         List<Endpoint> endpoints = getAllEndpoints();
         Endpoint existingEndpoint = endpoints.stream()
                 .filter(e -> e.getEndpoint().equals(endpointName))
@@ -55,6 +65,10 @@ public class EndpointService {
     }
 
     public void deleteEndpoint(String endpointName) {
+        if (endpointName == null) {
+            throw new IllegalArgumentException("Endpoint name must not be null.");
+        }
+
         List<Endpoint> endpoints = getAllEndpoints();
         boolean removed = endpoints.removeIf(e -> e.getEndpoint().equals(endpointName));
 
@@ -69,6 +83,9 @@ public class EndpointService {
     }
 
     private void publishDisabledEndpointsUpdate(List<Endpoint> endpoints) {
+        if (endpoints == null) {
+            throw new IllegalArgumentException("Endpoints list must not be null.");
+        }
         redisTemplate.convertAndSend(disabledEndpointsUpdatesTopic.getTopic(), endpoints);
     }
 }

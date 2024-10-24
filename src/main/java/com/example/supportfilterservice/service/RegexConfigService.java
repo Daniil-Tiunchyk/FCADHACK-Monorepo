@@ -15,11 +15,12 @@ import java.util.stream.Collectors;
 @Service
 public class RegexConfigService {
     private final RedisTemplate<String, List<RegexConfig>> redisTemplate;
+
     @Qualifier("regexConfigUpdatesTopic")
     private final ChannelTopic regexConfigUpdatesTopic;
 
     public RegexConfigService(@Qualifier("regexConfigRedisTemplate") RedisTemplate<String, List<RegexConfig>> redisTemplate,
-                             ChannelTopic regexConfigUpdatesTopic) {
+                              ChannelTopic regexConfigUpdatesTopic) {
         this.redisTemplate = redisTemplate;
         this.regexConfigUpdatesTopic = regexConfigUpdatesTopic;
     }
@@ -30,6 +31,10 @@ public class RegexConfigService {
     }
 
     public void createRegexConfig(RegexConfig regexConfig) {
+        if (regexConfig == null) {
+            throw new IllegalArgumentException("RegexConfig must not be null.");
+        }
+
         List<RegexConfig> regexConfigs = getAllRegexConfigs();
 
         // Проверка уникальности (по полям field и pattern)
@@ -45,6 +50,10 @@ public class RegexConfigService {
     }
 
     public void updateRegexConfig(String field, String pattern, RegexConfig updatedConfig) {
+        if (field == null || pattern == null || updatedConfig == null) {
+            throw new IllegalArgumentException("Field, pattern, and updatedConfig must not be null.");
+        }
+
         List<RegexConfig> regexConfigs = getAllRegexConfigs();
         RegexConfig existingConfig = regexConfigs.stream()
                 .filter(r -> r.getField().equals(field) && r.getPattern().equals(pattern))
@@ -72,6 +81,10 @@ public class RegexConfigService {
     }
 
     public void deleteRegexConfig(String field, String pattern) {
+        if (field == null || pattern == null) {
+            throw new IllegalArgumentException("Field and pattern must not be null.");
+        }
+
         List<RegexConfig> regexConfigs = getAllRegexConfigs();
         boolean removed = regexConfigs.removeIf(r -> r.getField().equals(field) && r.getPattern().equals(pattern));
 
@@ -86,6 +99,9 @@ public class RegexConfigService {
     }
 
     private void publishRegexConfigUpdate(List<RegexConfig> regexConfigs) {
+        if (regexConfigs == null) {
+            throw new IllegalArgumentException("RegexConfigs list must not be null.");
+        }
         redisTemplate.convertAndSend(regexConfigUpdatesTopic.getTopic(), regexConfigs);
     }
 

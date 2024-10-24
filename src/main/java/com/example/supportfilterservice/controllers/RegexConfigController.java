@@ -14,6 +14,7 @@ import java.util.List;
 public class RegexConfigController {
 
     private final RegexConfigService regexConfigService;
+    public final TestService testService;
 
     public RegexConfigController(RegexConfigService regexConfigService, TestService testService) {
         this.regexConfigService = regexConfigService;
@@ -29,8 +30,12 @@ public class RegexConfigController {
 
 
     // Создать новый RegexConfig
+    // Создать новый RegexConfig
     @PostMapping
     public ResponseEntity<String> createRegexConfig(@RequestBody RegexConfig regexConfig) {
+        if (regexConfig == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("RegexConfig must not be null.");
+        }
         try {
             regexConfigService.createRegexConfig(regexConfig);
             return ResponseEntity.status(HttpStatus.CREATED).body("RegexConfig created successfully.");
@@ -45,6 +50,9 @@ public class RegexConfigController {
             @RequestParam String field,
             @RequestParam String pattern,
             @RequestBody RegexConfig updatedConfig) {
+        if (field == null || pattern == null || updatedConfig == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Field, pattern, and updatedConfig must not be null.");
+        }
         try {
             regexConfigService.updateRegexConfig(field, pattern, updatedConfig);
             return ResponseEntity.ok("RegexConfig updated successfully.");
@@ -58,6 +66,9 @@ public class RegexConfigController {
     public ResponseEntity<String> deleteRegexConfig(
             @RequestParam String field,
             @RequestParam String pattern) {
+        if (field == null || pattern == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Field and pattern must not be null.");
+        }
         try {
             regexConfigService.deleteRegexConfig(field, pattern);
             return ResponseEntity.ok("RegexConfig deleted successfully.");
@@ -65,9 +76,12 @@ public class RegexConfigController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-    private final TestService testService;
+
     @PostMapping("/test")
     public ResponseEntity<String> processTestRequest(@RequestBody String value) {
+        if (value == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Value must not be null.");
+        }
         try {
             String result = testService.test(value);
             return ResponseEntity.ok(result);
