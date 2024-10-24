@@ -33,18 +33,29 @@ const TableFilters = ({ data, setResults }) => {
   const onClickApply = () => {
      let filteredResults = data.filter(
        (item) =>
-         item?.email?.toLowerCase().includes(emailInputValue?.toLowerCase()) &&
-         item?.name?.toLowerCase().includes(nameInputValue?.toLowerCase()) &&
-         item?.login?.toLowerCase().includes(loginInputValue?.toLowerCase()) &&
-         item?.userID?.toString().includes(userIDInputValue?.toString()) &&
-         item?.endpoint
-           ?.toLowerCase()
-           .includes(endPointInputValue?.toLowerCase()) &&
-         (selectedOptions.length !== 0 ?
-         selectedOptions
-           .join("")
-           .toString()
-           .indexOf(item?.supportLevel?.toString()) >= 0 : true)
+                 item?.email
+                   ?.toLowerCase()
+                   .includes(emailInputValue?.toLowerCase()) &&
+                 item?.firstName
+                   ?.toLowerCase()
+                   .includes(nameInputValue?.toLowerCase()) &&
+                 item?.login
+                   ?.toLowerCase()
+                   .includes(loginInputValue?.toLowerCase()) &&
+                 item?.userId
+                   ?.toString()
+                   .includes(userIDInputValue?.toString()) &&
+                 item?.endpoint
+                   ?.toLowerCase()
+                   .includes(endPointInputValue?.toLowerCase())
+     );
+     filteredResults = data.filter((item) =>
+       selectedOptions.length !== 0
+         ? selectedOptions
+             .join("")
+             .toString()
+             .indexOf(item?.supportLevel?.toString()) >= 0
+         : true
      );
      if (selectedDateBegin !== null && selectedDateEnd !== null) {
        const dateStart = format(selectedDateBegin, "dd/MM/yyyy");

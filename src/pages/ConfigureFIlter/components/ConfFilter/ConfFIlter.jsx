@@ -5,11 +5,37 @@ import './ConfFilter.css';
 import Select from '../Select/Select';
 
 
-const ConfFIlter = ({items}) => {
+const ConfFIlter = ({items, setResults, data}) => {
   const [inputValue, setInputValue] = useState(""); // Храним выбранное значение
 
   const [selectedValueToAdd, setSelectedValueToAdd] = useState(""); // Храним выбранное значение
   const [selectedValue, setSelectedValue] = useState(""); // Храним выбранное значение
+
+
+
+  const onClickApply = () => {
+    console.log(selectedValue);
+    if (selectedValue !== "Выбрать") {
+      let filteredResults = data.filter(
+        (item) =>  item?.name?.toLowerCase().indexOf(selectedValue?.toLowerCase()) >= 0
+      );
+      setResults(filteredResults);
+    }
+  };
+
+  const onClickAdd = () => {
+    setResults((prev) => [
+      ...prev,
+      {
+        name: selectedValueToAdd,
+        value: inputValue,
+        masking: false,
+        filter: false,
+        removingCP: false,
+        id: prev[prev.length - 1].id + 1,
+      }
+    ]);
+  }
 
   return (
     <div className="confFilter_block">
@@ -32,7 +58,7 @@ const ConfFIlter = ({items}) => {
               placeholder="Введите значение"
             />
           </div>
-          <Button>Добавить</Button>
+          <Button onClick={onClickAdd}>Добавить</Button>
         </div>
         <div className="confFiltersArea">
           <h2>Фильтр по полю</h2>
@@ -41,7 +67,7 @@ const ConfFIlter = ({items}) => {
             value={selectedValue}
             options={items}
           />
-          <Button>Применить</Button>
+          <Button onClick={onClickApply}>Применить</Button>
         </div>
       </div>
     </div>

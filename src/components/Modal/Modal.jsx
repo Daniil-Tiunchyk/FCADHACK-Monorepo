@@ -2,11 +2,20 @@ import React from "react";
 
 import Button from "../Button/Button";
 import "./Modal.css";
+import axios from "axios";
 
-const Modal = ({ title, item, message, name, openModal, onDelete }) => {
+
+
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const Modal = ({ title, item, message, name, openModal, onDelete, fetchURL }) => {
   const onDeleteElem = (id) => {
+    axios.delete(fetchURL + "?endpointName=" + item.endpoint);
     onDelete(id);
     openModal(null);
+    toast.error('Удалено!')
   };
 
   return (
@@ -26,6 +35,7 @@ const Modal = ({ title, item, message, name, openModal, onDelete }) => {
           <Button onClick={() => onDeleteElem(item.id)}>Хочу</Button>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 };

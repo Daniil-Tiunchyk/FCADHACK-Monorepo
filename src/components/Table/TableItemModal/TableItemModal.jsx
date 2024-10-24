@@ -36,8 +36,12 @@ const TableItemModal = ({ selectedItem, closeModal, formatDate }) => {
               <p>{selectedItem?.email || "-"}</p>
             </li>
             <li>
-              <h3>Имя</h3>
-              <p>{selectedItem?.name || "-"}</p>
+              <h3>Имя, фамилия, второе имя</h3>
+              <p>{`${selectedItem?.firstName || '-'} ${selectedItem?.lastName || "-"} ${selectedItem?.middleName || "-"}`}</p>
+            </li>
+            <li>
+              <h3>Сообщение</h3>
+              <p>{selectedItem?.message || "-"}</p>
             </li>
             <li>
               <h3>Точка доступа</h3>
@@ -68,8 +72,16 @@ const TableItemModal = ({ selectedItem, closeModal, formatDate }) => {
               <p>{selectedItem?.age || "-"}</p>
             </li>
             <li>
+              <h3>Номер телефона</h3>
+              <p>{selectedItem?.phoneNumber || "-"}</p>
+            </li>
+            <li>
+              <h3>Дата дня рождения</h3>
+              <p>{selectedItem?.birthDate || "-"}</p>
+            </li>
+            <li>
               <h3>ID пользователя</h3>
-              <p>{selectedItem?.userID || "-"}</p>
+              <p>{selectedItem?.userId || "-"}</p>
             </li>
           </ul>
         </div>

@@ -7,7 +7,7 @@ import TableItemModal from "./TableItemModal/TableItemModal";
 import Modal from "../Modal/Modal";
 
 
-const Table = ({ data, headerData }) => {
+const Table = ({ data, headerData, fetchURL = "" }) => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState({
     email: "",
@@ -16,7 +16,7 @@ const Table = ({ data, headerData }) => {
     name: "",
     supportLevel: "",
     timestamp: null,
-    userID: null,
+    userId: null,
     gender: "",
     age: null,
   });
@@ -24,21 +24,19 @@ const Table = ({ data, headerData }) => {
   const [currentItems, setCurrentItems] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [itemOffset, setItemOffset] = useState(0);
-  
-  const [isOpenModalUrl, setIsOpenModalUrl] = useState(0);
 
+  const [isOpenModalUrl, setIsOpenModalUrl] = useState(-1);
 
   /*  */
-
 
   const itemsPerPage = 5; // Количество элементов на страницу
 
   useEffect(() => {
     // Вычисляем конец и начало выборки данных для текущей страницы
     const endOffset = itemOffset + itemsPerPage;
-    data[0]?.userID
+    data[0]?.userId
       ? setCurrentItems(data.slice(itemOffset, endOffset))
-      : setCurrentItems(data)
+      : setCurrentItems(data);
     setPageCount(Math.ceil(data.length / itemsPerPage));
   }, [itemOffset, itemsPerPage, data]);
 
@@ -68,7 +66,7 @@ const Table = ({ data, headerData }) => {
   const onClickDelete = (id) => {
     const arr = currentItems.filter((item, index) => item.id !== id);
     setCurrentItems(arr);
-  }
+  };
 
   return (
     <>
@@ -80,23 +78,27 @@ const Table = ({ data, headerData }) => {
             }`}
           >
             <tr>
-              {headerData.map((item) => (
-                <th className={styles.tableHeader}>{item}</th>
+              {headerData.map((item, i) => (
+                <th key={i} className={styles.tableHeader}>
+                  {item}
+                </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {data[0]?.masking === undefined
-              ? data[0]?.userID
+            {data[0]?.field === undefined
+              ? data[0]?.userId
                 ? currentItems.map((el, i) => (
                     <tr
                       onClick={() => onClickTableElem(el)}
                       className={styles.tableRowItems}
-                      key={el.i}
+                      key={i}
                     >
-                      {/* ПОМЕНЯТЬ НА userID */}
+                      {/* ПОМЕНЯТЬ НА userId */}
                       <td className={styles.tableCell}>{el?.email || "-"}</td>
-                      <td className={styles.tableCell}>{el?.name || "-"}</td>
+                      <td className={styles.tableCell}>
+                        {el?.firstName || "-"}
+                      </td>
                       <td className={styles.tableCell}>
                         {el?.endpoint || "-"}
                       </td>
@@ -109,13 +111,14 @@ const Table = ({ data, headerData }) => {
                       </td>
                       <td className={styles.tableCell}>{el?.gender || "-"}</td>
                       <td className={styles.tableCell}>{el?.age || "-"}</td>
-                      <td className={styles.tableCell}>{el?.userID || "-"}</td>
+                      <td className={styles.tableCell}>{el?.userId || "-"}</td>
                     </tr>
                   ))
                 : currentItems.map((el, i) => (
                     <>
                       {isOpenModalUrl === el.id && (
                         <Modal
+                          fetchURL={fetchURL}
                           item={el}
                           onDelete={onClickDelete}
                           openModal={setIsOpenModalUrl}
@@ -123,7 +126,7 @@ const Table = ({ data, headerData }) => {
                           message={
                             "Вы уверены что хотите удалить выбранный URL?"
                           }
-                          urlName={el.url}
+                          name={el.endpoint}
                         />
                       )}
 
@@ -131,10 +134,9 @@ const Table = ({ data, headerData }) => {
                         className={`${styles.tableRowItems} ${styles.blockUrlRowItems}`}
                         key={el.id}
                       >
-                        {/* ПОМЕНЯТЬ НА userID */}
-                        <td className={styles.tableCell}>{el?.url}</td>
+                        {/* ПОМЕНЯТЬ НА userId */}
+                        <td className={styles.tableCell}>{el?.endpoint}</td>
                         <td className={styles.tableCell}>
-                          {el?.name}
                           <input
                             type="checkbox"
                             className={`checkbox ${styles.checkboxUrlTable}`}
@@ -159,6 +161,7 @@ const Table = ({ data, headerData }) => {
                   <>
                     {isOpenModalUrl === el.id && (
                       <Modal
+                        fetchURL={fetchURL}
                         item={el}
                         onDelete={onClickDelete}
                         openModal={setIsOpenModalUrl}
@@ -173,16 +176,20 @@ const Table = ({ data, headerData }) => {
                       className={`${styles.tableRowItems} ${styles.confTable}`}
                       key={el.id}
                     >
-                      {/* ПОМЕНЯТЬ НА userID */}
-                      <td className={styles.tableCell}>{el?.name}</td>
-                      <td className={styles.tableCell}>{el?.value}</td>
+                      {/* ПОМЕНЯТЬ НА userId */}
+                      <td className={styles.tableCell}>{el?.field}</td>
+                      <td className={styles.tableCell}>Регулярное выражение</td>
                       <td className={styles.tableCell}>
                         <div>
                           <input
                             type="checkbox"
                             className={`checkbox ${styles.checkboxUrlTable}`}
                             id={`checkboxMasking${el.id}`}
-                            defaultChecked={el.masking && true}
+                            defaultChecked={
+                              el.modes.findIndex((element) =>
+                                element.includes("HIDE_DATA")
+                              ) >= 0 && true
+                            }
                           />
                           <label htmlFor={`checkboxMasking${el.id}`}></label>
                         </div>
@@ -193,7 +200,11 @@ const Table = ({ data, headerData }) => {
                             type="checkbox"
                             className={`checkbox ${styles.checkboxUrlTable}`}
                             id={`checkboxFilter${el.id}`}
-                            defaultChecked={el.filter && true}
+                            defaultChecked={
+                              el.modes.findIndex((element) =>
+                                element.includes("REMOVE_OBJECT")
+                              ) >= 0 && true
+                            }
                           />
                           <label htmlFor={`checkboxFilter${el.id}`}></label>
                         </div>
@@ -204,7 +215,11 @@ const Table = ({ data, headerData }) => {
                             type="checkbox"
                             className={`checkbox ${styles.checkboxUrlTable}`}
                             id={`checkboxCP${el.id}`}
-                            defaultChecked={el.cp && true}
+                            defaultChecked={
+                              el.modes.findIndex((element) =>
+                                element.includes("REMOVE_FIELD")
+                              ) >= 0 && true
+                            }
                           />
                           <label htmlFor={`checkboxCP${el.id}`}></label>
                         </div>
@@ -229,7 +244,7 @@ const Table = ({ data, headerData }) => {
           selectedItem={selectedItem}
         />
       )}
-      {data[0]?.userID !== undefined && (
+      {data[0]?.userId !== undefined && (
         <TableFooter pageCount={pageCount} handlePageClick={handlePageClick} />
       )}
     </>

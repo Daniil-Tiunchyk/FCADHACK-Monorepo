@@ -3,77 +3,89 @@ import "./BlockUrlPage.css";
 import Header from '../../components/Header/Header';
 import Table from '../../components/Table';
 import Button from "../../components/Button/Button";
+import axios from 'axios';
 
-const data = [
-  {
-    url: "http://localhost:3000",
-    filter: false,
-    id: 1,  
-  },
-  {
-    url: "http://localhost:3000",
-    filter: true,
-    id: 2,
-  },
-  {
-    url: "http://localhost:3000",
-    filter: false,
-    id: 3,
-  },
-  {
-    url: "http://localhost:3000",
-    filter: true,
-    id: 4,
-  },
-  {
-    url: "http://localhost:3000",
-    filter: true,
-    id: 5,
-  },
-  {
-    url: "http://localhost:3000",
-    filter: false,
-    id: 6,
-  },
-  {
-    url: "http://localhost:3000",
-    filter: false,
-    id: 7,
-  },
-];
+
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const headerData = ["URL", "Фильтрация", ""];
+
+const fetchURL = "http://193.22.147.81:8082/api/endpoints";
 
 const BlockUrlPage = () => {
       const [isLoading, setIsLoading] = useState(true);
       const [isOpenfilters, setOpenFilters] = useState(false);
       const [isOpenBurger, setIsOpenBurger] = useState(false);
 
-      const [newData, setNewData] = useState(data)
+      const [newData, setNewData] = useState([])
       const [inputValue, setInputValue] = useState("");
+
       
       useEffect(() => {
+         axios
+           .get(fetchURL, {
+             headers: {
+               "Content-Type": "application/json",
+               "Access-Control-Allow-Credentials": "true",
+               "Access-Control-Allow-Origin": "*",
+               "Access-Control-Allow-Methods":
+                 "GET, POST, PATCH, DELETE, PUT, OPTIONS",
+               "Access-Control-Allow-Headers":
+                 "Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With",
+             },
+           })
+           .then((response) => {
+            response.data.forEach((item,i) => {
+              item.id = i
+            })
+             setNewData(response.data); // Устанавливаем полученные данные
+             setIsLoading(false); // Отключаем индикатор загрузки
+           })
+           .catch((error) => {
+             console.error(error);
+             setIsLoading(false);
+           });
+      
+
+
         return () => setIsLoading(false);
       }, []);
 
       const onClickAdd = () => {
         if (inputValue !== "") {
-          const newID = newData[newData.length - 1].id + 1;
-          setNewData((prev) => [
-            ...prev,
-            {
-              url: inputValue,
-              filter: false,
-              id: newID,
-            },
-          ]);
+          axios
+            .post(fetchURL, {
+              endpoint: inputValue,
+              enabled: false,
+            })
+            .then((response) => {
+              console.log(response);
+              const newID = newData[newData.length - 1]?.id
+                ? newData[newData.length - 1]?.id + 1
+                : 1;
+              setNewData((prev) => [
+                ...prev,
+                {
+                  endpoint: inputValue,
+                  enabled: false,
+                  id: newID
+                },
+              ]);
+              toast.success("Добавлено!")
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+
         }
         setInputValue("")
       }
 
   return (
     <div className={"App"}>
-      
       <div className="container">
         <div className="wrapper">
           <Header
@@ -95,10 +107,13 @@ const BlockUrlPage = () => {
               </div>
               <Button onClick={onClickAdd}>Добавить</Button>
             </div>
-            {isLoading || <Table data={newData} headerData={headerData} />}
+            {isLoading || (
+              <Table fetchURL={fetchURL} data={newData} headerData={headerData} />
+            )}
           </main>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 }

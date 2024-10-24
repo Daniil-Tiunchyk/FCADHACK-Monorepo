@@ -43,3 +43,15 @@
     border-radius: 5px;
     padding: 10px 10%;
 }
+
+@media (max-width:768px) {
+    .modal {
+        width: 95%;
+    }
+}
+
+@media (max-width:500px) {
+    .modal {
+        padding: 40px 20px;
+    }
+}

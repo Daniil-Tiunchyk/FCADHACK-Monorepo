@@ -25,11 +25,10 @@ const handleClickOutside = (event) => {
     setIsDropdownOpen((prev) => !prev);
   };
 
-  const handleSelectClick = (event) => {
-    setValue(event.target.innerText); // Сохраняем выбранное значение
-    setIsDropdownOpen(false)
+  const handleSelectClick = (option) => {
+    setValue(option); // Сохраняем выбранное значение
+    setIsDropdownOpen(false);
   };
-  
 
   return (
     <>
@@ -46,13 +45,12 @@ const handleClickOutside = (event) => {
         {isDropdownOpen && (
           <div className="options-selectdropdown">
             {options.map((option, index) => (
-                <div
-                  onClick={(e) => handleSelectClick(e)}
-                  key={index}
-                  className="option-select"
-                >
-                  {option}
-                </div>
+              <div
+                key={option.id}
+                onClick={() => handleSelectClick(option.name)}
+              >
+                <div className="option-select">{option.name}</div>
+              </div>
             ))}
           </div>
         )}

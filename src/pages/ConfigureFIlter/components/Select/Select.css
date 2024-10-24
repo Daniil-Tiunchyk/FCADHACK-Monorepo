@@ -22,7 +22,7 @@
 }
 
 .options-selectdropdown {
-    position: fixed;
+    position: absolute;
     z-index: 2;
     display: flex;
     flex-direction: column;
