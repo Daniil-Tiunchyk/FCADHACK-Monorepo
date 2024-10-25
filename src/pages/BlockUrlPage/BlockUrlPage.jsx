@@ -48,10 +48,7 @@ const BlockUrlPage = () => {
              console.error(error);
              setIsLoading(false);
            });
-      
-
-
-        return () => setIsLoading(false);
+    
       }, []);
 
       const onClickAdd = () => {
@@ -107,9 +104,9 @@ const BlockUrlPage = () => {
               </div>
               <Button onClick={onClickAdd}>Добавить</Button>
             </div>
-            {isLoading || (
+            
               <Table fetchURL={fetchURL} data={newData} headerData={headerData} />
-            )}
+            {isLoading && <h1 className='loading'>Загрузка...</h1>}
           </main>
         </div>
       </div>

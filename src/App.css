@@ -29,7 +29,11 @@ h2,h3,h4 {
   font-family: "Roboto", sans-serif;
   font-weight: bold;
 }
-
+.loading{
+  margin: 0 auto;
+  text-align: center;
+  top: 0;
+}
 p {
   font-family: "Roboto", sans-serif;
   font-size: 18px;
@@ -261,6 +265,9 @@ footer{
   
     .header {
       position: relative;
+    }
+    .loading {
+      font-size: 24px;
     }
 }
 

@@ -58,8 +58,6 @@ function App() {
          toast.error('Ошибка запроса!')
          setIsLoading(false);
        });
-      
-    return () => setIsLoading(false)
   }, [])
 
 
@@ -76,8 +74,8 @@ function App() {
           <main>
             {isOpenfilters && <TableFilters data={data} setResults={setNewData} />}
             <Table headerData={headerData} data={newData} />
-            {isLoading && <h1 className="loading">Загрузка...</h1>}
           </main>
+            {isLoading && <h1 className="loading">Загрузка...</h1>}
           <footer>
             <p className="ExplainingText">
               Выберите нужный лог и просмотрите подробную информацию о нем

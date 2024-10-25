@@ -95,13 +95,13 @@ const ConfigureFilterPage = () => {
               setResults={setResults}
               items={filterPerName}
             />
-            {isLoading || (
+            
               <Table
                 fetchURL={fetchURL}
                 headerData={headerData}
                 data={results}
               />
-            )}
+            {isLoading && <h1 className='loading'>Загрузка...</h1>}
           </main>
         </div>
       </div>
