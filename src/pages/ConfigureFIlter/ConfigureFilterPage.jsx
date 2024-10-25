@@ -43,6 +43,7 @@ const ConfigureFilterPage = () => {
         });
         data = response.data;
         setResults(response.data); // Устанавливаем полученные данные
+        console.log(response.data);
         setIsLoading(false); // Отключаем индикатор загрузки
       })
       .catch((error) => {

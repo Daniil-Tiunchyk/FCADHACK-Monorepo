@@ -205,7 +205,7 @@ const Table = ({ data, headerData, fetchURL = "" }) => {
                         message={
                           "Вы уверены что хотите удалить выбранное поле?"
                         }
-                        name={el.name}
+                        name={el.field}
                       />
                     )}
                     <tr
@@ -214,7 +214,7 @@ const Table = ({ data, headerData, fetchURL = "" }) => {
                     >
                       {/* ПОМЕНЯТЬ НА userId */}
                       <td className={styles.tableCell}>{el?.field}</td>
-                      <td className={styles.tableCell}>Регулярное выражение</td>
+                      <td className={styles.tableCell}>Регулярное выражение: {el.pattern}</td>
                       <td className={styles.tableCell}>
                         <div>
                           <input

@@ -22,7 +22,7 @@ const headerData = [
   "Возраст",
   "ID пользователя"
 ]
-const data = []
+let data = []
 function App() {
   const fetchURL = "http://193.22.147.81:8081/api/support-messages";
 
@@ -49,7 +49,7 @@ function App() {
          },
        })
        .then((response) => {
-        data.push(...response.data);
+        data = response.data;
         setNewData(response.data); // Устанавливаем полученные данные
          setIsLoading(false); // Отключаем индикатор загрузки
        })

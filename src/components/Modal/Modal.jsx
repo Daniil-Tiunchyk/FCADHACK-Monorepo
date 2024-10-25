@@ -12,7 +12,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 const Modal = ({ title, item, message, name, openModal, onDelete, fetchURL }) => {
   const onDeleteElem = (id) => {
-    axios.delete(fetchURL + "?endpointName=" + item.endpoint);
+    const updatedPattern = encodeURIComponent(item.pattern);
+    axios.delete(fetchURL + (item?.endpoint ? "?endpointName=" : ("?field=" + item.field + "&pattern=" + updatedPattern)));
     onDelete(id);
     openModal(null);
     toast.error('Удалено!')

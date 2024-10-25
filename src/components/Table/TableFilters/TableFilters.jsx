@@ -31,32 +31,37 @@ const TableFilters = ({ data, setResults }) => {
   /*  */
 
   const onClickApply = () => {
+    console.log('data', data)
      let filteredResults = data.filter(
        (item) =>
-                 item?.email
-                   ?.toLowerCase()
-                   .includes(emailInputValue?.toLowerCase()) &&
-                 item?.firstName
-                   ?.toLowerCase()
-                   .includes(nameInputValue?.toLowerCase()) &&
-                 item?.login
-                   ?.toLowerCase()
-                   .includes(loginInputValue?.toLowerCase()) &&
-                 item?.userId
-                   ?.toString()
-                   .includes(userIDInputValue?.toString()) &&
-                 item?.endpoint
-                   ?.toLowerCase()
-                   .includes(endPointInputValue?.toLowerCase())
+       {
+        const isHasFirstName =
+          item?.firstName !== null
+            ? item?.firstName
+                ?.toString()
+                ?.toLowerCase()
+                ?.includes(nameInputValue?.toLowerCase())
+            : true;
+        return (
+          item?.email
+            ?.toString()
+            ?.toLowerCase()
+            .includes(emailInputValue?.toLowerCase()) &&
+          isHasFirstName &&
+          item?.login
+            ?.toString()
+            .toLowerCase()
+            .includes(loginInputValue?.toLowerCase()) &&
+          item?.userId?.toString().includes(userIDInputValue?.toString()) &&
+          item?.endpoint
+            ?.toString()
+            ?.toLowerCase()
+            .includes(endPointInputValue?.toLowerCase())
+        );
+       }
+        
      );
-     filteredResults = data.filter((item) =>
-       selectedOptions.length !== 0
-         ? selectedOptions
-             .join("")
-             .toString()
-             .indexOf(item?.supportLevel?.toString()) >= 0
-         : true
-     );
+    console.log(filteredResults);
      if (selectedDateBegin !== null && selectedDateEnd !== null) {
        const dateStart = format(selectedDateBegin, "dd/MM/yyyy");
        const dateEnd = format(selectedDateEnd, "dd/MM/yyyy");
@@ -70,9 +75,13 @@ const TableFilters = ({ data, setResults }) => {
            console.log("date",itemDate, itemDate >= start);
            return itemDate >= start && itemDate <= end;
          })
-         console.log(filteredResults);
      } 
-     setResults(filteredResults);
+     
+     if (filteredResults.length === 0) {
+       setResults(data);
+      } else {
+        setResults(filteredResults);
+      }
   }
 
 
