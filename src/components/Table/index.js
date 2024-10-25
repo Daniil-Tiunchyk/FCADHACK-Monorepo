@@ -47,16 +47,15 @@ const Table = ({ data, headerData, fetchURL = "" }) => {
     setItemOffset(newOffset);
   };
 
-  const formatDate = (timestamp) => {
-    return new Intl.DateTimeFormat("ru", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    }).format(timestamp);
-  };
+const formatDate = (timestamp) => {
+  const date = new Date(timestamp);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Месяцы от 0 до 11
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
+
 
   const onClickTableElem = (el) => {
     document.body.style.overflow = "hidden";
@@ -103,6 +102,7 @@ const Table = ({ data, headerData, fetchURL = "" }) => {
          console.log(error);
        });
   }
+
   return (
     <>
       <div className="table_block">
@@ -142,7 +142,7 @@ const Table = ({ data, headerData, fetchURL = "" }) => {
                         {el?.supportLevel || "-"}
                       </td>
                       <td className={styles.tableCell}>
-                        {(el?.timestamp && formatDate(el?.timestamp)) || "-"}
+                        {(el?.timestamp && formatDate(el?.detectedAt)) || "-"}
                       </td>
                       <td className={styles.tableCell}>{el?.gender || "-"}</td>
                       <td className={styles.tableCell}>{el?.age || "-"}</td>

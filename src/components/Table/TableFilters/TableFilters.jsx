@@ -32,7 +32,21 @@ const TableFilters = ({ data, setResults }) => {
 
   const onClickApply = () => {
     console.log('data', data)
-     let filteredResults = data.filter(
+    let filteredResults
+      if (selectedDateBegin !== null && selectedDateEnd !== null) {
+        const dateStart = format(selectedDateBegin, "dd/MM/yyyy");
+        const dateEnd = format(selectedDateEnd, "dd/MM/yyyy");
+
+        const start = new Date(dateStart.split("/").reverse().join("-"));
+        const end = new Date(dateEnd.split("/").reverse().join("-"));
+
+        filteredResults = data.filter((item) => {
+          const itemDate = parseDate(format(item?.detectedAt, "dd.MM.yyyy"));
+          console.log("date", itemDate, itemDate >= start);
+          return itemDate >= start && itemDate <= end;
+        });
+      }
+      filteredResults = data.filter(
        (item) =>
        {
         const isHasFirstName =
@@ -61,27 +75,15 @@ const TableFilters = ({ data, setResults }) => {
        }
         
      );
-    console.log(filteredResults);
-     if (selectedDateBegin !== null && selectedDateEnd !== null) {
-       const dateStart = format(selectedDateBegin, "dd/MM/yyyy");
-       const dateEnd = format(selectedDateEnd, "dd/MM/yyyy");
-
-       const start = new Date(dateStart.split("/").reverse().join("-"));
-       const end = new Date(dateEnd.split("/").reverse().join("-"));
-
-       filteredResults = data
-         .filter((item) => {
-           const itemDate = parseDate(format(item?.timestamp, "dd.MM.yyyy"));
-           console.log("date",itemDate, itemDate >= start);
-           return itemDate >= start && itemDate <= end;
-         })
-     } 
-     
-     if (filteredResults.length === 0) {
-       setResults(data);
+    console.log('1',filteredResults);
+    
+      if (filteredResults.length === 0) {
+        setResults(data);
       } else {
         setResults(filteredResults);
       }
+     
+     
   }
 
 
