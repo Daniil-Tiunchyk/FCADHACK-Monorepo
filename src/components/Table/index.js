@@ -43,8 +43,13 @@ const Table = ({ data, headerData, fetchURL = "" }) => {
 
   // Обработчик изменения страницы
   const handlePageClick = (event) => {
-    const newOffset = (event.selected * itemsPerPage) % data.length;
-    setItemOffset(newOffset);
+    if (event === 0) {
+      setItemOffset(0); 
+    } else {
+      const newOffset = (event.selected * itemsPerPage) % data.length;
+      console.log(newOffset)
+      setItemOffset(newOffset);
+    }
   };
 
 const formatDate = (timestamp) => {

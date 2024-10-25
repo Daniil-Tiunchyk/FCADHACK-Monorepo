@@ -10,6 +10,12 @@ const TableFooter = ({pageCount,handlePageClick}) => {
   }
   }, [screenWidth])
 
+  useEffect(() => {
+    if (pageCount === 1) {
+      handlePageClick(0);
+    }
+  }, [pageCount, handlePageClick]);
+
   return (
     <div className={styles.tableFooter}>
       <ReactPaginate
