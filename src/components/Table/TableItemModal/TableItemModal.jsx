@@ -82,7 +82,7 @@ const TableItemModal = ({ selectedItem, closeModal, formatDate }) => {
               <p>{selectedItem?.birthDate || "-"}</p>
             </li>
             <li>
-              <h3>Обнаруженный фильтрации</h3>
+              <h3>Обнаруженные фильтрации</h3>
               {selectedItem.detectedFields.map((elem, i) => (
                 <>
                   <div key={elem?.id || i}>
