@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react'
-import './TableItemModal.css'
+import React, { useEffect, useRef } from "react";
+import "./TableItemModal.css";
 
 const TableItemModal = ({ selectedItem, closeModal, formatDate }) => {
   const modalRef = useRef(null);
@@ -17,7 +17,7 @@ const TableItemModal = ({ selectedItem, closeModal, formatDate }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   });
-
+  console.log(selectedItem.detectedFields);
   return (
     <>
       <div className="bg"></div>
@@ -37,7 +37,9 @@ const TableItemModal = ({ selectedItem, closeModal, formatDate }) => {
             </li>
             <li>
               <h3>Имя, фамилия, второе имя</h3>
-              <p>{`${selectedItem?.firstName || '-'} ${selectedItem?.lastName || "-"} ${selectedItem?.middleName || "-"}`}</p>
+              <p>{`${selectedItem?.firstName || "-"} ${
+                selectedItem?.lastName || "-"
+              } ${selectedItem?.middleName || "-"}`}</p>
             </li>
             <li>
               <h3>Сообщение</h3>
@@ -80,6 +82,19 @@ const TableItemModal = ({ selectedItem, closeModal, formatDate }) => {
               <p>{selectedItem?.birthDate || "-"}</p>
             </li>
             <li>
+              <h3>Обнаруженный фильтрации</h3>
+              {selectedItem.detectedFields.map((elem, i) => (
+                <>
+                  <div key={elem?.id || i}>
+                    <p>{elem?.field || "-"}</p>
+                    <p>{elem?.regex || "-"}</p>
+                    <p>{elem?.mode || "-"}</p>
+                  </div>
+                  <br />
+                </>
+              ))}
+            </li>
+            <li>
               <h3>ID пользователя</h3>
               <p>{selectedItem?.userId || "-"}</p>
             </li>
@@ -90,4 +105,4 @@ const TableItemModal = ({ selectedItem, closeModal, formatDate }) => {
   );
 };
 
-export default TableItemModal
+export default TableItemModal;
