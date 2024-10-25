@@ -70,7 +70,12 @@ const TableFilters = ({ data, setResults }) => {
           item?.endpoint
             ?.toString()
             ?.toLowerCase()
-            .includes(endPointInputValue?.toLowerCase())
+            .includes(endPointInputValue?.toLowerCase()) &&
+            (selectedOptions.length !== 0 ?
+         selectedOptions
+           .join("")
+           .toString()
+           .indexOf(item?.supportLevel?.toString()) >= 0 : true)
         );
        }
         
