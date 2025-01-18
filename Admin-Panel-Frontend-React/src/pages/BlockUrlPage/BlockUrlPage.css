@@ -1,0 +1,10 @@
+.urlAdd_block {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.urlAdd_block button {
+    cursor: pointer;
+}

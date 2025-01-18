@@ -1,0 +1,55 @@
+.authInput_block {
+    position: relative;
+}
+
+.authInput_block input{
+    border: 1px solid var(--stroke-input);
+    outline: none;
+    border-radius: 5px;
+    padding: 23px;
+    padding-top: 39px;
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--firstcolor);
+    transition: .1s ease-in-out;
+}
+
+.authInput_block input:focus {
+    border-left: 4px solid var(--firstcolor);
+}
+
+.authInput_block span {
+    position: absolute;
+    top: 12px;
+    left: 28px;
+    font-family: Roboto;
+    font-size: 18px;
+    color: var(--input);
+}
+
+
+
+@media(max-height:680px) {
+    .authInput_block input {
+        padding: 18px;
+        padding-top: 30px;
+        font-size: 16px;
+    }
+    .authInput_block span {
+        font-size: 14px;
+    }
+   
+}
+
+@media(max-width:1024px) {
+    .authInput_block span {
+            font-size: 14px;
+        }
+        .authInput_block input {
+            padding: 18px;
+            padding-top: 30px;
+            font-size: 16px;
+        }
+      
+}

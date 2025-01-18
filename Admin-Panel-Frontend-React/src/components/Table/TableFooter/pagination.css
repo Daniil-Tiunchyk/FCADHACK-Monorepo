@@ -1,0 +1,49 @@
+.pagination {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    list-style: none;
+    -webkit-touch-callout: none;
+        /* iOS Safari */
+        -webkit-user-select: none;
+        /* Safari */
+        -khtml-user-select: none;
+        /* Konqueror HTML */
+        -moz-user-select: none;
+        /* Old versions of Firefox */
+        -ms-user-select: none;
+        /* Internet Explorer/Edge */
+        user-select: none;
+        /* Non-prefixed version, currently
+                                      supported by Chrome, Edge, Opera and Firefox */
+}
+
+.page-item {
+    margin: 0 0.5rem;
+    font-family: "Roboto";
+}
+
+.page-link {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--table);
+    color: #007bff;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.page-link:hover {
+    background-color: var(--table);
+    color: white;
+}
+
+.active .page-link {
+    background-color: var(--firstcolor);
+    color: white;
+    border-color: var(--firstcolor);
+}
+
+@media (max-width: 768px) {
+    .page-item {
+        margin: 0 0.2rem;
+    }
+}
