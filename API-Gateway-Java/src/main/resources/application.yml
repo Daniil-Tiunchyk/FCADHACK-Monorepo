@@ -1,0 +1,45 @@
+springdoc:
+  swagger-ui:
+    configUrl: "/swagger-config.json"
+spring:
+  cloud:
+    gateway:
+      #globalcors:
+      #  corsConfigurations:
+      #    '[/**]':
+      #      allowedOrigins: "http://localhost:4200"
+      #      allowedHeaders: "*"
+      #      allowedMethods:
+      #        - GET
+      #        - POST
+      #        - DELETE
+      #        - PUT
+      routes:
+        - id: dataingestionservice
+          uri: lb://dataingestionservice
+          predicates:
+            - Path=/api/identity/**,/api/support-requests
+
+
+        - id: support-service
+          uri: lb://support-service
+          predicates:
+            - Path=/api/support-messages/**,/api/support-messages,/api/result-messages,/api/result-messages/**
+
+        - id: support-filter-service
+          uri: lb://support-filter-service
+          predicates:
+            - Path=/api/**
+          filters:
+            - name: AuthenticationFilter
+          #- id: auth-server-registration
+          #  uri: lb://authorization-service
+          #  predicates:
+          #    - Path=/api/identity/registration
+          #  filters:
+          #    - name: AuthenticationFilter
+          #      args:
+          #        requiredRole: ROLE_ADMIN
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
